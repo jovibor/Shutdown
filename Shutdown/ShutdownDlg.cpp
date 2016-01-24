@@ -53,6 +53,11 @@ BOOL CShutdownDlg::OnInitDialog()
 	m_spin_minutes.SetRange(0, 59);
 	m_spin_minutes.SetPos(0);
 
+	UDACCEL accel[2];
+	accel[0].nSec = 0; accel[0].nInc = 1;
+	accel[1].nSec = 1; accel[1].nInc = 8;
+	m_spin_minutes.SetAccel(2, accel);	//acceleration of minutes_spin
+
 	CMenu* pSysMenu = GetSystemMenu(FALSE);
 	pSysMenu->DeleteMenu(0, MF_BYPOSITION);
 	pSysMenu->DeleteMenu(1, MF_BYPOSITION);
