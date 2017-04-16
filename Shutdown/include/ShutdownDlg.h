@@ -3,7 +3,7 @@
 class CShutdownDlg : public CDialog
 {
 public:
-	CShutdownDlg(CWnd* pParent = nullptr) : CDialog(IDD_SHUTDOWN_DIALOG, pParent){};
+	CShutdownDlg(CWnd* pParent = nullptr) : CDialog(IDD_SHUTDOWN_DIALOG, pParent){}; 
 protected:
 	HICON m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	CShutdownEdit m_edit_minutes, m_edit_hours;

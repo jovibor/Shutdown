@@ -122,7 +122,7 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 	if(m_time_total == 1)	//warn user for one minute remain to shut down 
 	{
 		Beep(15000, 350);
-		if(IDCANCEL == MessageBox(TEXT("Attention! Your system will shut down in one minute!\n You can \"Cancel\" it right now."),
+		if(IDCANCEL == MessageBox(TEXT("Warning! Your system is about to shut down in less than 1 minute!\n Press \"Cancel\" to prevent it."),
 			TEXT("SHUTDOWN Warning!!!"), MB_OKCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND))
 			OnPopupResetTimer();
 	}
