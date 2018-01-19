@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "ShutdownAboutdlg.h"
+#include "AboutDlg.h"
 
-BEGIN_MESSAGE_MAP(CShutdownAboutDlg, CDialog)
+BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	ON_WM_MOUSEMOVE()
 	ON_WM_CTLCOLOR()
 	ON_WM_LBUTTONDOWN()
@@ -9,7 +9,7 @@ BEGIN_MESSAGE_MAP(CShutdownAboutDlg, CDialog)
 	ON_WM_DRAWITEM()
 END_MESSAGE_MAP()
 
-BOOL CShutdownAboutDlg::OnInitDialog()
+BOOL CAboutDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -33,7 +33,7 @@ BOOL CShutdownAboutDlg::OnInitDialog()
 	return TRUE;
 }
 
-void CShutdownAboutDlg::OnMouseMove(UINT nFlags, CPoint point)
+void CAboutDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	CWnd* pWnd = ChildWindowFromPoint(point);
 	if(pWnd == nullptr) //mouse pointer is out of window
@@ -53,7 +53,7 @@ void CShutdownAboutDlg::OnMouseMove(UINT nFlags, CPoint point)
 	}
 }
 
-HBRUSH CShutdownAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	pDC->SetBkColor(RGB(0, 0, 0));
 
@@ -74,7 +74,7 @@ HBRUSH CShutdownAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return m_hbr_black;
 }
 
-void CShutdownAboutDlg::OnLButtonDown(UINT nFlags, CPoint point)
+void CAboutDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	CWnd* pWnd = ChildWindowFromPoint(point);
 	if(pWnd == nullptr)
@@ -87,13 +87,13 @@ void CShutdownAboutDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		ShellExecute(nullptr, TEXT("open"), TEXT("https://github.com/jovibor/Shutdown"), nullptr, nullptr, NULL);
 }
 
-void CShutdownAboutDlg::OnDestroy()
+void CAboutDlg::OnDestroy()
 {
 	DeleteObject(m_font_underline);
 	DeleteObject(m_hbr_black);
 }
 
-void CShutdownAboutDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
+void CAboutDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
 {
 	CDC *pDC = CDC::FromHandle(lpDIS->hDC);
 

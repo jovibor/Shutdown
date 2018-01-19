@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ShutdownDlg.h"
-#include "ShutdownAboutdlg.h"
+#include "Aboutdlg.h"
 
 #define WM_TRAYICON_MESSAGE (WM_APP + 1)
 
@@ -90,42 +90,40 @@ void CShutdownDlg::ShutdownPC()
 	OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
 	AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, nullptr, nullptr);
 	InitiateSystemShutdownEx(nullptr, nullptr, NULL, TRUE, FALSE, SHTDN_REASON_FLAG_PLANNED);
+	
 	DestroyWindow();
 }
 
 void CShutdownDlg::OnSetupButton()
 {
-	KillTimer(m_timer_id);
-
-	if((m_time_total = (m_spin_hours.GetPos() * 60) + m_spin_minutes.GetPos()) == 0)
-	{
-		ShutdownPC();
-		return;
-	}
-
-	m_timer_id = SetTimer(1, 60000, nullptr);
+	if (m_timer_id != 0)
+		KillTimer(m_timer_id);
+	
+	m_time_total = (m_spin_hours.GetPos() * 60) + m_spin_minutes.GetPos();
 	m_systray_menu.EnableMenuItem(IDC_POPUP_RESETTIMER, MF_ENABLED);
 	ShowWindow(SW_HIDE);
-	UpdateTooltipText();
+	m_timer_id = SetTimer(1, 60000, nullptr);
+	OnTimer(m_timer_id);
 }
 
 void CShutdownDlg::OnTimer(UINT nIDEvent)
 {
-	if(--m_time_total == 0)
-	{
-		ShutdownPC();
-		return;
-	}
-
 	UpdateTooltipText();
 
-	if(m_time_total == 1)	//warn user for one minute remain to shut down 
-	{
-		Beep(15000, 350);
-		if(IDCANCEL == MessageBox(TEXT("Warning! Your system is about to shut down in less than 1 minute!\n Press \"Cancel\" to prevent it."),
-			TEXT("SHUTDOWN Warning!!!"), MB_OKCANCEL | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND))
+	switch (m_time_total) {//time in minutes to shutdown
+	case 0:
+		ShutdownPC();
+		return;
+	case 1:
+		m_time_total--;
+		if (IDCANCEL == m_lastmin_dlg.DoModal())
 			OnPopupResetTimer();
-	}
+		return;
+		break;
+	
+	default:
+		m_time_total--;
+	}	
 }
 
 LRESULT CShutdownDlg::OnSystrayIconMessage(WPARAM wParam, LPARAM lParam)
@@ -153,7 +151,7 @@ void CShutdownDlg::OnSysCommand(UINT nID, LPARAM wParam)
 		ShowWindow(SW_HIDE);
 		break;
 	case IDC_MENU_ABOUT:{
-		CShutdownAboutDlg about_dlg;
+		CAboutDlg about_dlg;
 		about_dlg.DoModal();
 		break;
 	}
@@ -170,6 +168,8 @@ void CShutdownDlg::OnPopupExit()
 void CShutdownDlg::OnPopupResetTimer()
 {
 	KillTimer(m_timer_id);
+	m_timer_id = 0;
+
 	_tcscpy_s(m_systray_icon.szTip, TEXT("No time set"));
 	Shell_NotifyIcon(NIM_MODIFY, &m_systray_icon);
 	m_systray_menu.EnableMenuItem(IDC_POPUP_RESETTIMER, MF_DISABLED);
@@ -198,6 +198,9 @@ BOOL CShutdownDlg::PreTranslateMessage(MSG* pMsg)
 
 void CShutdownDlg::OnDestroy()
 {
+	if (m_timer_id != 0)
+		KillTimer(m_timer_id);
+
 	Shell_NotifyIcon(NIM_DELETE, &m_systray_icon);
 	UnregisterHotKey(m_hWnd, 1);
 	m_systray_menu.DestroyMenu();
@@ -224,10 +227,10 @@ HBRUSH CShutdownDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 void CShutdownDlg::UpdateTooltipText()
 {
-	if(m_time_total / 60 > 0)
-		swprintf_s(m_systray_icon.szTip, 128, TEXT("%u%s%u%s"), m_time_total / 60, TEXT(" hours, "), m_time_total % 60, TEXT(" minutes to shutdown"));
+	if(m_time_total % 60 > 9)
+		swprintf_s(m_systray_icon.szTip, 128, TEXT("%u%s%u%s"), m_time_total / 60, TEXT(":"), m_time_total % 60, TEXT(" remaining"));
 	else
-		swprintf_s(m_systray_icon.szTip, 128, TEXT("%u%s"), m_time_total, TEXT(" minutes to shutdown"));
+		swprintf_s(m_systray_icon.szTip, 128, TEXT("%u%s%u%s"), m_time_total / 60, TEXT(":0"), m_time_total % 60, TEXT(" remaining"));
 
 	Shell_NotifyIcon(NIM_MODIFY, &m_systray_icon);
 }

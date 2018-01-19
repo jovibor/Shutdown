@@ -140,6 +140,7 @@
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
       <Optimization>MinSpace</Optimization>
       <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -179,8 +180,9 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LastminDlg.cpp" />
     <ClCompile Include="Shutdown.cpp" />
-    <ClCompile Include="ShutdownAboutDlg.cpp" />
+    <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="ShutdownDlg.cpp" />
     <ClCompile Include="ShutdownEdit.cpp" />
     <ClCompile Include="StdAfx.cpp">
@@ -188,12 +190,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LastminDlg.h" />
     <ClInclude Include="include\Resource.h" />
     <ClInclude Include="include\Shutdown.h" />
-    <ClInclude Include="include\ShutdownAboutDlg.h" />
+    <ClInclude Include="include\AboutDlg.h" />
     <ClInclude Include="include\ShutdownDlg.h" />
     <ClInclude Include="include\ShutdownEdit.h" />
-    <ClInclude Include="include\StdAfx.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Shutdown.rc" />

@@ -7,3 +7,5 @@
 
 #include "Resource.h"
 #include "ShutdownEdit.h"
+#include "LastminDlg.h"
+#include <afxwin.h>

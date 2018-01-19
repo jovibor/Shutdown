@@ -1,9 +1,9 @@
 #pragma once
 
-class CShutdownAboutDlg : public CDialog
+class CAboutDlg : public CDialog
 {
 public:
-	CShutdownAboutDlg(CWnd* pParent = nullptr) : CDialog(IDD_ABOUT_DIALOG, pParent){};
+	CAboutDlg(CWnd* pParent = nullptr) : CDialog(IDD_ABOUT_DIALOG, pParent){};
 protected:
 	HICON m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	BOOL mb_mailto_underline = TRUE, mb_httpgithub_underline = TRUE;

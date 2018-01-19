@@ -75,6 +75,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\shutdown.ico"
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
@@ -102,11 +103,21 @@ FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         "OK",IDOK,"Button",BS_OWNERDRAW | WS_TABSTOP,71,57,40,14
     CONTROL         "Press Ctrl+Alt+S to shut down system immediately.",IDC_STATIC,
-                    "Static",SS_LEFTNOWORDWRAP | WS_GROUP,12,21,157,8
-    LTEXT           "Shutdown. Version 1.0",IDC_STATIC,55,10,72,8
-    LTEXT           "eaxedx@gmail.com",IDC_MAILTO,59,43,62,8,NOT WS_GROUP
-    LTEXT           "https://github.com/jovibor/Shutdown",IDC_HTTPGITHUB,31,32,119,8
+                    "Static",SS_LEFTNOWORDWRAP | WS_GROUP,13,21,157,8
+    LTEXT           "Shutdown. Version 1.1",IDC_STATIC,55,10,72,8
+    LTEXT           "eaxedx@gmail.com",IDC_MAILTO,61,43,62,8,NOT WS_GROUP
+    LTEXT           "https://github.com/jovibor/Shutdown",IDC_HTTPGITHUB,32,32,119,8
     GROUPBOX        "",IDC_STATIC,3,2,177,79
+END
+
+IDD_LASTMIN_DIALOG DIALOGEX 0, 0, 179, 81
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Last minute warning..."
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Abort...",IDCANCEL,"Button",BS_OWNERDRAW | WS_TABSTOP,47,38,85,20
+    LTEXT           "",IDC_LASTMIN_TIMER,79,23,20,8
+    GROUPBOX        "System is shutting down in:",IDC_STATIC,7,6,165,64,BS_CENTER
 END
 
 
@@ -129,8 +140,37 @@ BEGIN
     IDD_ABOUT_DIALOG, DIALOG
     BEGIN
     END
+
+    IDD_LASTMIN_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 172
+        TOPMARGIN, 1
+        BOTTOMMARGIN, 73
+    END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_LASTMIN_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_SHUTDOWN_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ABOUT_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

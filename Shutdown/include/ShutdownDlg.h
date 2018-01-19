@@ -11,8 +11,9 @@ protected:
 	CSpinButtonCtrl m_spin_hours, m_spin_minutes;
 	UINT m_time_total;
 	NOTIFYICONDATA m_systray_icon;
-	UINT_PTR m_timer_id;
+	UINT_PTR m_timer_id = 0;
 	HBRUSH m_hbr_black, m_hbr_white;
+	CLastminDlg m_lastmin_dlg;
 
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
