@@ -113,13 +113,22 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 	switch (m_time_total) {//time in minutes to shutdown
 	case 0:
 		ShutdownPC();
-		return;
-	case 1:
-		m_time_total--;
-		if (IDCANCEL == m_lastmin_dlg.DoModal())
-			OnPopupResetTimer();
-		return;
 		break;
+	case 1:
+	{
+		m_time_total--;
+
+		INT_PTR dlg_rtrnvalue = m_lastmin_dlg.DoModal();
+		if (dlg_rtrnvalue == IDCANCEL)
+			OnPopupResetTimer();
+
+		else if (dlg_rtrnvalue == IDC_POSTPONE_BUTTON) {
+			m_time_total = 30;
+			m_timer_id = SetTimer(m_timer_id, 60000, nullptr); //resetting the timer
+			OnTimer(m_timer_id);
+		}
+		break;
+	}
 	
 	default:
 		m_time_total--;
