@@ -32,7 +32,7 @@ BOOL CShutdownApp::InitInstance()
 
 	CShutdownDlg dlg(&main_window);
 	m_pMainWnd = &dlg;
-
+	
 	dlg.DoModal();
 
 	return FALSE;

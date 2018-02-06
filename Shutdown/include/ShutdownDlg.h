@@ -19,9 +19,9 @@ protected:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual void DoDataExchange(CDataExchange* pDX);
 	virtual BOOL OnInitDialog();
-	void OnPopupShow();
-	void OnPopupResetTimer();
-	void OnPopupExit();
+	void OnSystrayMenuShow();
+	void OnSystrayMenuResetTimer();
+	void OnSystrayMenuExit();
 	void ShutdownPC();
 	void UpdateTooltipText();
 	void OnSetupButton();
@@ -33,4 +33,5 @@ protected:
 	HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS);
 	void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMIS);
+	void ResetTimer();
 };

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ShutdownDlg.h"
 #include "Aboutdlg.h"
+#include <thread>
 
 #define WM_TRAYICON_MESSAGE (WM_APP + 1)
 
@@ -17,9 +18,9 @@ BEGIN_MESSAGE_MAP(CShutdownDlg, CDialog)
 	ON_WM_SYSCOMMAND()
 	ON_MESSAGE(WM_TRAYICON_MESSAGE, OnSystrayIconMessage)
 	ON_MESSAGE(WM_HOTKEY, OnHotKey)
-	ON_COMMAND(IDC_POPUP_SHOW, OnPopupShow)
-	ON_COMMAND(IDC_POPUP_EXIT, OnPopupExit)
-	ON_COMMAND(IDC_POPUP_RESETTIMER, OnPopupResetTimer)
+	ON_COMMAND(IDC_SYSTRAYMENU_SHOW, OnSystrayMenuShow)
+	ON_COMMAND(IDC_SYSTRAYMENU_EXIT, OnSystrayMenuExit)
+	ON_COMMAND(IDC_SYSTRAYMENU_RESETTIMER, OnSystrayMenuResetTimer)
 	ON_WM_CTLCOLOR()
 	ON_WM_DRAWITEM()
 	ON_WM_MEASUREITEM()
@@ -66,9 +67,9 @@ BOOL CShutdownDlg::OnInitDialog()
 	pSysMenu->AppendMenu(MF_ENABLED, IDC_MENU_ABOUT, TEXT("About..."));
 
 	m_systray_menu.CreatePopupMenu();
-	m_systray_menu.AppendMenu(MF_OWNERDRAW, IDC_POPUP_SHOW, _TEXT("Main window"));
-	m_systray_menu.AppendMenu(MF_OWNERDRAW | MF_DISABLED, IDC_POPUP_RESETTIMER, _TEXT("Reset timer"));
-	m_systray_menu.AppendMenu(MF_OWNERDRAW, IDC_POPUP_EXIT, _TEXT("Exit"));
+	m_systray_menu.AppendMenu(MF_OWNERDRAW, IDC_SYSTRAYMENU_SHOW, _TEXT("Main window"));
+	m_systray_menu.AppendMenu(MF_OWNERDRAW | MF_DISABLED, IDC_SYSTRAYMENU_RESETTIMER, _TEXT("Reset timer"));
+	m_systray_menu.AppendMenu(MF_OWNERDRAW, IDC_SYSTRAYMENU_EXIT, _TEXT("Exit"));
 
 	m_hbr_black = CreateSolidBrush(RGB(0, 0, 0));
 	m_hbr_white = CreateSolidBrush(RGB(255, 255, 255));
@@ -100,7 +101,7 @@ void CShutdownDlg::OnSetupButton()
 		KillTimer(m_timer_id);
 	
 	m_time_total = (m_spin_hours.GetPos() * 60) + m_spin_minutes.GetPos();
-	m_systray_menu.EnableMenuItem(IDC_POPUP_RESETTIMER, MF_ENABLED);
+	m_systray_menu.EnableMenuItem(IDC_SYSTRAYMENU_RESETTIMER, MF_ENABLED);
 	ShowWindow(SW_HIDE);
 	m_timer_id = SetTimer(1, 60000, nullptr);
 	OnTimer(m_timer_id);
@@ -117,14 +118,17 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 	case 1:
 	{
 		m_time_total--;
+		
+		std::thread beep(Beep, 15000, 350); //calling Beep() in async state->
+		beep.detach(); //->and detaching immidiately 
 
 		INT_PTR dlg_rtrnvalue = m_lastmin_dlg.DoModal();
-		if (dlg_rtrnvalue == IDCANCEL)
-			OnPopupResetTimer();
 
+		if (dlg_rtrnvalue == IDCANCEL)
+			ResetTimer();
 		else if (dlg_rtrnvalue == IDC_POSTPONE_BUTTON) {
 			m_time_total = 30;
-			m_timer_id = SetTimer(m_timer_id, 60000, nullptr); //resetting the timer
+			m_timer_id = SetTimer(m_timer_id, 60000, nullptr); //resetting the timer to 30 min.
 			OnTimer(m_timer_id);
 		}
 		break;
@@ -169,22 +173,18 @@ void CShutdownDlg::OnSysCommand(UINT nID, LPARAM wParam)
 	}
 }
 
-void CShutdownDlg::OnPopupExit()
+void CShutdownDlg::OnSystrayMenuExit()
 {
 	DestroyWindow();
 }
 
-void CShutdownDlg::OnPopupResetTimer()
+void CShutdownDlg::OnSystrayMenuResetTimer()
 {
-	KillTimer(m_timer_id);
-	m_timer_id = 0;
-
-	_tcscpy_s(m_systray_icon.szTip, TEXT("No time set"));
-	Shell_NotifyIcon(NIM_MODIFY, &m_systray_icon);
-	m_systray_menu.EnableMenuItem(IDC_POPUP_RESETTIMER, MF_DISABLED);
+	ResetTimer();
+	m_lastmin_dlg.EndDialog(0); //destroying lastmin dlg if exist
 }
 
-void CShutdownDlg::OnPopupShow()
+void CShutdownDlg::OnSystrayMenuShow()
 {
 	ShowWindow(SW_SHOW);
 }
@@ -192,6 +192,7 @@ void CShutdownDlg::OnPopupShow()
 LRESULT CShutdownDlg::OnHotKey(WPARAM wParam, LPARAM lParam)
 {
 	ShutdownPC();
+
 	return 0;
 }
 
@@ -242,6 +243,16 @@ void CShutdownDlg::UpdateTooltipText()
 		swprintf_s(m_systray_icon.szTip, 128, TEXT("%u%s%u%s"), m_time_total / 60, TEXT(":0"), m_time_total % 60, TEXT(" remaining"));
 
 	Shell_NotifyIcon(NIM_MODIFY, &m_systray_icon);
+}
+
+void CShutdownDlg::ResetTimer()
+{
+	KillTimer(m_timer_id);
+	m_timer_id = 0;
+
+	_tcscpy_s(m_systray_icon.szTip, TEXT("No time set"));
+	Shell_NotifyIcon(NIM_MODIFY, &m_systray_icon);
+	m_systray_menu.EnableMenuItem(IDC_SYSTRAYMENU_RESETTIMER, MF_DISABLED);
 }
 
 void CShutdownDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)

@@ -1,11 +1,10 @@
 //{{NO_DEPENDENCIES}}
-
 #define IDC_SPIN_HOURS                  101
 #define IDC_SPIN_MINUTES                102
 #define IDD_SHUTDOWN_DIALOG             103
-#define IDC_POPUP_EXIT                  105
-#define IDC_POPUP_RESETTIMER            106
-#define IDC_POPUP_SHOW                  107
+#define IDC_SYSTRAYMENU_EXIT                  105
+#define IDC_SYSTRAYMENU_RESETTIMER            106
+#define IDC_SYSTRAYMENU_SHOW                  107
 #define IDC_MENU_ABOUT                  109
 #define IDR_MAINFRAME                   128
 #define IDD_ABOUT_DIALOG                132
