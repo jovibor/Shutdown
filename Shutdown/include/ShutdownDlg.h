@@ -10,11 +10,16 @@ protected:
 	CMenu m_systray_menu;
 	CSpinButtonCtrl m_spin_hours, m_spin_minutes;
 	UINT m_time_total;
-	NOTIFYICONDATA m_systray_icon;
-	UINT_PTR m_timer_id = 0;
+	NOTIFYICONDATA m_systray_icon = { 0 };
+	NOTIFYICONIDENTIFIER m_systray_iconid;
+	RECT m_systray_iconrect;
 	HBRUSH m_hbr_black, m_hbr_white;
 	CLastminDlg m_lastmin_dlg;
-
+	HWND m_tooltip_hwnd;
+	TOOLINFO m_ti = { 0 };
+	BOOL mf_tooltip = FALSE, mf_first_time_tooltip = TRUE;
+	WCHAR m_tooltip_text[20];
+	
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual void DoDataExchange(CDataExchange* pDX);

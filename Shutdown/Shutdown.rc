@@ -104,7 +104,7 @@ BEGIN
     CONTROL         "OK",IDOK,"Button",BS_OWNERDRAW | WS_TABSTOP,71,57,40,14
     CONTROL         "Press Ctrl+Alt+S to shut down system immediately.",IDC_STATIC,
                     "Static",SS_LEFTNOWORDWRAP | WS_GROUP,13,21,157,8
-    LTEXT           "Shutdown. Version 1.1",IDC_STATIC,55,10,72,8
+    LTEXT           "Shutdown. Version 1.2",IDC_STATIC,55,10,72,8
     LTEXT           "eaxedx@gmail.com",IDC_MAILTO,61,43,62,8,NOT WS_GROUP
     LTEXT           "https://github.com/jovibor/Shutdown",IDC_HTTPGITHUB,32,32,119,8
     GROUPBOX        "",IDC_STATIC,3,2,177,79
