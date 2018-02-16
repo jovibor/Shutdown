@@ -28,24 +28,23 @@ BOOL CAboutDlg::OnInitDialog()
 
 	m_hbr_black = CreateSolidBrush(RGB(0, 0, 0));
 
-	SetIcon(m_hIcon, TRUE);
-
 	return TRUE;
 }
 
 void CAboutDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	CWnd* pWnd = ChildWindowFromPoint(point);
-	if(pWnd == nullptr) //mouse pointer is out of window
+
+	if (pWnd == nullptr) //mouse pointer is out of window
 		return;
 
-	if(mb_mailto_underline == (pWnd->GetDlgCtrlID() == IDC_MAILTO)) //is mouse pointer hovering IDC_MAILTO?
+	if (mb_mailto_underline == (pWnd->GetDlgCtrlID() == IDC_MAILTO)) //is mouse pointer hovering IDC_MAILTO?
 	{
 		mb_mailto_underline = !mb_mailto_underline;
 		::InvalidateRect(GetDlgItem(IDC_MAILTO)->m_hWnd, nullptr, FALSE);
 		SetCursor(mb_mailto_underline ? m_cur_arrow : m_cur_hand);
 	}
-	if(mb_httpgithub_underline == (pWnd->GetDlgCtrlID() == IDC_HTTPGITHUB))
+	if (mb_httpgithub_underline == (pWnd->GetDlgCtrlID() == IDC_HTTPGITHUB))
 	{
 		mb_httpgithub_underline = !mb_httpgithub_underline;
 		::InvalidateRect(GetDlgItem(IDC_HTTPGITHUB)->m_hWnd, nullptr, FALSE);
@@ -57,7 +56,7 @@ HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	pDC->SetBkColor(RGB(0, 0, 0));
 
-	switch(pWnd->GetDlgCtrlID())
+	switch (pWnd->GetDlgCtrlID())
 	{
 	case IDC_MAILTO:
 		pDC->SetTextColor(RGB(0, 255, 50));
@@ -77,13 +76,14 @@ HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 void CAboutDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	CWnd* pWnd = ChildWindowFromPoint(point);
-	if(pWnd == nullptr)
+
+	if (pWnd == nullptr)
 		return;
 
-	if(pWnd->GetDlgCtrlID() == IDC_MAILTO)
+	if (pWnd->GetDlgCtrlID() == IDC_MAILTO)
 		ShellExecute(nullptr, TEXT("open"), TEXT("mailto:eaxedx@gmail.com"), nullptr, nullptr, NULL);
 
-	if(pWnd->GetDlgCtrlID() == IDC_HTTPGITHUB)
+	if (pWnd->GetDlgCtrlID() == IDC_HTTPGITHUB)
 		ShellExecute(nullptr, TEXT("open"), TEXT("https://github.com/jovibor/Shutdown"), nullptr, nullptr, NULL);
 }
 
@@ -97,7 +97,7 @@ void CAboutDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
 {
 	CDC *pDC = CDC::FromHandle(lpDIS->hDC);
 
-	switch(lpDIS->CtlType)
+	switch (lpDIS->CtlType)
 	{
 	case ODT_BUTTON:
 	{
@@ -109,9 +109,9 @@ void CAboutDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
 		pDC->SetTextColor(RGB(255, 255, 255));
 		pDC->DrawText(buff, &lpDIS->rcItem, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-		if(lpDIS->itemState & ODS_FOCUS)       // If the button has focus
+		if (lpDIS->itemState & ODS_FOCUS)       // If the button has focus
 		{
-			if(lpDIS->itemState & ODS_SELECTED)
+			if (lpDIS->itemState & ODS_SELECTED)
 				pDC->DrawEdge(&lpDIS->rcItem, EDGE_SUNKEN, BF_RECT);    // Draw a sunken face
 
 			lpDIS->rcItem.top += 4;	lpDIS->rcItem.left += 4;

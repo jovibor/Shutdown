@@ -12,8 +12,8 @@ BOOL CShutdownApp::InitInstance()
 	//==================================================================
 
 	CreateMutex(nullptr, FALSE, TEXT("ShutDown-34754674"));
-	
-	if(GetLastError() == ERROR_ALREADY_EXISTS)
+
+	if (GetLastError() == ERROR_ALREADY_EXISTS)
 	{
 		HWND hWnd = FindWindow(nullptr, TEXT("Shutdown"));
 		ShowWindow(hWnd, SW_SHOWNORMAL);
@@ -32,7 +32,7 @@ BOOL CShutdownApp::InitInstance()
 
 	CShutdownDlg dlg(&main_window);
 	m_pMainWnd = &dlg;
-	
+
 	dlg.DoModal();
 
 	return FALSE;

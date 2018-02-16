@@ -3,6 +3,6 @@
 class CShutdownApp : public CWinApp
 {
 public:
-	CShutdownApp(){};
+	CShutdownApp() {};
 	virtual BOOL InitInstance();
 };

@@ -141,11 +141,12 @@
       <Optimization>MinSpace</Optimization>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -190,19 +191,19 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LastminDlg.h" />
+    <ClInclude Include="include\LastminDlg.h" />
     <ClInclude Include="include\Resource.h" />
     <ClInclude Include="include\Shutdown.h" />
     <ClInclude Include="include\AboutDlg.h" />
     <ClInclude Include="include\ShutdownDlg.h" />
     <ClInclude Include="include\ShutdownEdit.h" />
-    <ClInclude Include="stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Shutdown.rc" />
+    <ClInclude Include="include\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\shutdown.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Shutdown.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
