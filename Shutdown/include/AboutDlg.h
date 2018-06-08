@@ -5,10 +5,10 @@ class CAboutDlg : public CDialog
 public:
 	CAboutDlg(CWnd* pParent = nullptr) : CDialog(IDD_ABOUT_DIALOG, pParent) {};
 protected:
-	BOOL mb_mailto_underline = TRUE, mb_httpgithub_underline = TRUE;
-	HFONT m_font_normal = nullptr, m_font_underline = nullptr;
-	HCURSOR m_cur_hand = nullptr, m_cur_arrow = nullptr;
-	HBRUSH m_hbr_black = nullptr;
+	BOOL m_fMailtoUnderline = TRUE, m_fGithubUnderline = TRUE;
+	HFONT m_fontNormal = nullptr, m_fontUnderline = nullptr;
+	HCURSOR m_curHand = nullptr, m_curArrow = nullptr;
+	HBRUSH m_hbrBlack = nullptr;
 
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL OnInitDialog();

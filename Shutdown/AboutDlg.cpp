@@ -15,18 +15,18 @@ BOOL CAboutDlg::OnInitDialog()
 
 	SetClassLongPtr(m_hWnd, GCL_HCURSOR, 0); //to prevent cursor from blinking
 
-	m_font_normal = static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT));
+	m_fontNormal = static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT));
 
 	LOGFONT logFont;
-	GetObject(m_font_normal, sizeof(logFont), &logFont);
+	GetObject(m_fontNormal, sizeof(logFont), &logFont);
 	logFont.lfUnderline = TRUE;
 
-	m_font_underline = CreateFontIndirect(&logFont);
+	m_fontUnderline = CreateFontIndirect(&logFont);
 
-	m_cur_hand = LoadCursor(nullptr, IDC_HAND);
-	m_cur_arrow = LoadCursor(nullptr, IDC_ARROW);
+	m_curHand = LoadCursor(nullptr, IDC_HAND);
+	m_curArrow = LoadCursor(nullptr, IDC_ARROW);
 
-	m_hbr_black = CreateSolidBrush(RGB(0, 0, 0));
+	m_hbrBlack = CreateSolidBrush(RGB(0, 0, 0));
 
 	return TRUE;
 }
@@ -38,17 +38,17 @@ void CAboutDlg::OnMouseMove(UINT nFlags, CPoint point)
 	if (pWnd == nullptr) //mouse pointer is out of window
 		return;
 
-	if (mb_mailto_underline == (pWnd->GetDlgCtrlID() == IDC_MAILTO)) //is mouse pointer hovering IDC_MAILTO?
+	if (m_fMailtoUnderline == (pWnd->GetDlgCtrlID() == IDC_MAILTO)) //is mouse pointer hovering IDC_MAILTO?
 	{
-		mb_mailto_underline = !mb_mailto_underline;
+		m_fMailtoUnderline = !m_fMailtoUnderline;
 		::InvalidateRect(GetDlgItem(IDC_MAILTO)->m_hWnd, nullptr, FALSE);
-		SetCursor(mb_mailto_underline ? m_cur_arrow : m_cur_hand);
+		SetCursor(m_fMailtoUnderline ? m_curArrow : m_curHand);
 	}
-	if (mb_httpgithub_underline == (pWnd->GetDlgCtrlID() == IDC_HTTPGITHUB))
+	if (m_fGithubUnderline == (pWnd->GetDlgCtrlID() == IDC_HTTPGITHUB))
 	{
-		mb_httpgithub_underline = !mb_httpgithub_underline;
+		m_fGithubUnderline = !m_fGithubUnderline;
 		::InvalidateRect(GetDlgItem(IDC_HTTPGITHUB)->m_hWnd, nullptr, FALSE);
-		SetCursor(mb_httpgithub_underline ? m_cur_arrow : m_cur_hand);
+		SetCursor(m_fGithubUnderline ? m_curArrow : m_curHand);
 	}
 }
 
@@ -60,17 +60,17 @@ HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	{
 	case IDC_MAILTO:
 		pDC->SetTextColor(RGB(0, 255, 50));
-		pDC->SelectObject(mb_mailto_underline ? m_font_normal : m_font_underline);
+		pDC->SelectObject(m_fMailtoUnderline ? m_fontNormal : m_fontUnderline);
 		break;
 	case IDC_HTTPGITHUB:
 		pDC->SetTextColor(RGB(0, 255, 50));
-		pDC->SelectObject(mb_httpgithub_underline ? m_font_normal : m_font_underline);
+		pDC->SelectObject(m_fGithubUnderline ? m_fontNormal : m_fontUnderline);
 		break;
 	default:
 		pDC->SetTextColor(RGB(255, 255, 255));
 	}
 
-	return m_hbr_black;
+	return m_hbrBlack;
 }
 
 void CAboutDlg::OnLButtonDown(UINT nFlags, CPoint point)
@@ -89,8 +89,8 @@ void CAboutDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CAboutDlg::OnDestroy()
 {
-	DeleteObject(m_font_underline);
-	DeleteObject(m_hbr_black);
+	DeleteObject(m_fontUnderline);
+	DeleteObject(m_hbrBlack);
 }
 
 void CAboutDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)

@@ -6,19 +6,19 @@ public:
 	CShutdownDlg(CWnd* pParent = nullptr) : CDialog(IDD_SHUTDOWN_DIALOG, pParent) {};
 protected:
 	HICON m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	CShutdownEdit m_edit_minutes, m_edit_hours;
-	CMenu m_systray_menu;
-	CSpinButtonCtrl m_spin_hours, m_spin_minutes;
-	UINT m_time_total { };
-	NOTIFYICONDATA m_systray_icon { };
-	NOTIFYICONIDENTIFIER m_systray_iconid { };
-	RECT m_systray_iconrect { };
-	HBRUSH m_hbr_black = nullptr, m_hbr_white = nullptr;
-	CLastminDlg m_lastmin_dlg;
-	HWND m_tooltip_hwnd = nullptr;
-	TOOLINFO m_ti { };
-	BOOL mf_tooltip = FALSE, mf_first_time_tooltip = TRUE;
-	TCHAR m_tooltip_text[20] { };
+	CShutdownEdit m_stEditMinutes, m_stEditHours;
+	CMenu m_stMenuSystray;
+	CSpinButtonCtrl m_stSpinHours, m_stSpinMinutes;
+	UINT m_unTimeTotal { };
+	NOTIFYICONDATA m_stSystrayIcon { };
+	NOTIFYICONIDENTIFIER m_stSystrayIconIdent { };
+	RECT m_rectSystrayIcon { };
+	HBRUSH m_hbrBlack = nullptr, m_hbrWhite = nullptr;
+	CLastminDlg m_stDlgLastmin;
+	HWND m_hwndTooltip = nullptr;
+	TOOLINFO m_stToolInfo { };
+	BOOL m_fTooltip = FALSE, m_fToolTipFirstTime = TRUE;
+	WCHAR m_strTooltip[20] { };
 
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
