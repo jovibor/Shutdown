@@ -11,11 +11,11 @@ BOOL CShutdownApp::InitInstance()
 	//If mutex already exist - find window and show it, then return.
 	//==================================================================
 
-	CreateMutex(nullptr, FALSE, TEXT("ShutDown-34754674"));
+	CreateMutex(nullptr, FALSE, L"ShutDown-34754674");
 
 	if (GetLastError() == ERROR_ALREADY_EXISTS)
 	{
-		HWND hWnd = FindWindow(nullptr, TEXT("Shutdown"));
+		HWND hWnd = FindWindow(nullptr, L"Shutdown");
 		ShowWindow(hWnd, SW_SHOWNORMAL);
 		SetForegroundWindow(hWnd);
 		return FALSE;
@@ -27,7 +27,7 @@ BOOL CShutdownApp::InitInstance()
 	//Dialog box must have WS_EX_APPWINDOW style set to false.
 	//===================================================================
 	CWnd main_window;
-	main_window.CreateEx(0, AfxRegisterWndClass(0), _T(""), WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT,
+	main_window.CreateEx(0, AfxRegisterWndClass(0), L"", WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr);
 
 	CShutdownDlg dlg(&main_window);

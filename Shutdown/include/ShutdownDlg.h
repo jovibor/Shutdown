@@ -19,6 +19,10 @@ protected:
 	TOOLINFO m_stToolInfo { };
 	BOOL m_fTooltip = FALSE, m_fToolTipFirstTime = TRUE;
 	WCHAR m_strTooltip[20] { };
+	const unsigned m_uTrayIconId { 1 };
+	const unsigned m_uTimerShutdown { 1 };
+	const unsigned m_uTimerToolTip { 2 };
+	const WCHAR * const m_pTextNoTime { L"No time set" };
 
 	DECLARE_MESSAGE_MAP()
 	virtual BOOL PreTranslateMessage(MSG* pMsg);

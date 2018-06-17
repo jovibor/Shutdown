@@ -81,10 +81,10 @@ void CAboutDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 
 	if (pWnd->GetDlgCtrlID() == IDC_MAILTO)
-		ShellExecute(nullptr, TEXT("open"), TEXT("mailto:eaxedx@gmail.com"), nullptr, nullptr, NULL);
+		ShellExecute(nullptr, L"open", L"mailto:eaxedx@gmail.com", nullptr, nullptr, NULL);
 
 	if (pWnd->GetDlgCtrlID() == IDC_HTTPGITHUB)
-		ShellExecute(nullptr, TEXT("open"), TEXT("https://github.com/jovibor/Shutdown"), nullptr, nullptr, NULL);
+		ShellExecute(nullptr, L"open", L"https://github.com/jovibor/Shutdown", nullptr, nullptr, NULL);
 }
 
 void CAboutDlg::OnDestroy()
