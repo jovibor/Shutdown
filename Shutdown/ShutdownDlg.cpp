@@ -103,6 +103,15 @@ BOOL CShutdownDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);
 	SetIcon(m_hIcon, FALSE);
 
+	// Parsing cmnLine params
+	// If "-m" then going to midnight mode
+	// and minimizing main window.
+	if (wcsstr(AfxGetApp()->m_lpCmdLine, L"-m"))
+	{
+		OnMidnightButton();
+		PostMessageW(WM_SYSCOMMAND, SC_MINIMIZE, 0);
+	}
+
 	return TRUE;
 }
 
@@ -141,10 +150,10 @@ void CShutdownDlg::OnMidnightButton()
 	m_unTimeTotal = (24 - now.tm_hour) * 60 - now.tm_min;
 
 	m_stMenuSystray.EnableMenuItem(IDC_SYSTRAYMENU_RESETTIMER, MF_ENABLED);
-	ShowWindow(SW_HIDE);
-	SetTimer(m_uTimerShutdown, 60000, nullptr);
 
+	SetTimer(m_uTimerShutdown, 60000, nullptr);
 	OnTimer(m_uTimerShutdown);
+	ShowWindow(SW_HIDE);
 }
 
 void CShutdownDlg::OnTimer(UINT nIDEvent)
