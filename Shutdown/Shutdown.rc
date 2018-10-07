@@ -159,21 +159,6 @@ END
 // AFX_DIALOG_LAYOUT
 //
 
-IDD_LASTMIN_DIALOG AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_SHUTDOWN_DIALOG AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_ABOUT_DIALOG AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 

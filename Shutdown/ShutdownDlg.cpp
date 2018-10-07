@@ -198,8 +198,8 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 		GetCursorPos(&cur);
 		Shell_NotifyIconGetRect(&m_stSystrayIconIdent, &m_rectSystrayIcon);
 
-		//Checking if mouse pointer is within systrayicon rect
-		//if not — killing tooltip window
+		//Checking if mouse pointer is within systrayicon rect.
+		//if not â€” killing tooltip window.
 		if (!(cur.x >= m_rectSystrayIcon.left && cur.x <= m_rectSystrayIcon.right && cur.y >= m_rectSystrayIcon.top && cur.y <= m_rectSystrayIcon.bottom))
 		{
 			KillTimer(m_uTimerToolTip);

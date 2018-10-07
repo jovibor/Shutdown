@@ -13,15 +13,15 @@ protected:
 	NOTIFYICONDATA m_stSystrayIcon { };
 	NOTIFYICONIDENTIFIER m_stSystrayIconIdent { };
 	RECT m_rectSystrayIcon { };
-	HBRUSH m_hbrBlack = nullptr, m_hbrWhite = nullptr;
+	HBRUSH m_hbrBlack { }, m_hbrWhite { };
 	CLastminDlg m_stDlgLastmin;
-	HWND m_hwndTooltip = nullptr;
+	HWND m_hwndTooltip { };
 	TOOLINFO m_stToolInfo { };
 	BOOL m_fTooltip = FALSE, m_fToolTipFirstTime = TRUE;
 	WCHAR m_strTooltip[20] { };
 	const unsigned m_uTrayIconId { 1 };
-	const unsigned m_uTimerShutdown { 1 };
-	const unsigned m_uTimerToolTip { 2 };
+	const UINT_PTR m_uTimerShutdown { 1 };
+	const UINT_PTR m_uTimerToolTip { 2 };
 	const WCHAR * const m_pTextNoTime { L"No time set" };
 
 	DECLARE_MESSAGE_MAP()
