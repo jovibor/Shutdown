@@ -23,24 +23,21 @@ HBRUSH CLastminDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return  m_hbrBlack;
 }
 
-
 BOOL CLastminDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
 	m_hbrBlack = CreateSolidBrush(RGB(0, 0, 0));
-	m_unTimerSec = 60;
+	m_uTimerSec = 60;
 
 	SetTimer(TIME_LASTMIN, 1000, nullptr);
 	OnTimer(TIME_LASTMIN);
 
 	SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);
-
 	SetFocus();
 
 	return TRUE;
 }
-
 
 void CLastminDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
 {
@@ -49,7 +46,7 @@ void CLastminDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
 	switch (lpDIS->CtlType)
 	case ODT_BUTTON:
 	{
-		TCHAR buff[128];
+		WCHAR buff[128];
 		::GetWindowText(lpDIS->hwndItem, buff, 128);
 
 		pDC->FillSolidRect(&lpDIS->rcItem, RGB(0, 0, 0)); //Button color
@@ -71,33 +68,29 @@ void CLastminDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
 	}
 }
 
-
 void CLastminDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	TCHAR timer_text[5];
-	if (m_unTimerSec > 9)
-		swprintf_s(timer_text, 5, L"%s%u", L"0:", m_unTimerSec);
+	WCHAR timer_text[5];
+	if (m_uTimerSec > 9)
+		swprintf_s(timer_text, 5, L"%s%u", L"0:", m_uTimerSec);
 	else
-		swprintf_s(timer_text, 5, L"%s%u", L"0:0", m_unTimerSec);
+		swprintf_s(timer_text, 5, L"%s%u", L"0:0", m_uTimerSec);
 
 	SetDlgItemText(IDC_LASTMIN_TIMER, timer_text);
 
-	if (m_unTimerSec-- == 0)
+	if (m_uTimerSec-- == 0)
 		KillTimer(TIME_LASTMIN);
 }
-
 
 void CLastminDlg::OnDestroy()
 {
 	KillTimer(TIME_LASTMIN);
 }
 
-
 void CLastminDlg::OnPostponeButton()
 {
 	EndDialog(IDC_POSTPONE_BUTTON);
 }
-
 
 BOOL CLastminDlg::PreTranslateMessage(MSG* pMsg)
 {

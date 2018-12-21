@@ -1,5 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
+// Used by Z:\SOFTWARE\SOURCES\Shutdown\Shutdown\Shutdown.rc
 //
 #define IDC_SPIN_HOURS                  101
 #define IDC_SPIN_MINUTES                102
@@ -24,7 +25,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        142
+#define _APS_NEXT_RESOURCE_VALUE        143
 #define _APS_NEXT_COMMAND_VALUE         32778
 #define _APS_NEXT_CONTROL_VALUE         1027
 #define _APS_NEXT_SYMED_VALUE           111

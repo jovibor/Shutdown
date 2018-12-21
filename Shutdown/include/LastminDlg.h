@@ -11,7 +11,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);
 	DECLARE_MESSAGE_MAP()
 	HBRUSH m_hbrBlack { };
-	UINT m_unTimerSec { };
+	UINT m_uTimerSec { };
 
 public:
 	virtual BOOL OnInitDialog();
