@@ -26,11 +26,11 @@ BOOL CShutdownApp::InitInstance()
 	//to our dialog window - to prevent dialog from having taskbar entry.
 	//Dialog box must have WS_EX_APPWINDOW style set to false.
 	//===================================================================
-	CWnd main_window;
-	main_window.CreateEx(0, AfxRegisterWndClass(0), L"", WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT,
+	CWnd wndMain;
+	wndMain.CreateEx(0, nullptr, nullptr, 0, CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr);
 
-	CShutdownDlg dlg(&main_window);
+	CShutdownDlg dlg(&wndMain);
 	m_pMainWnd = &dlg;
 
 	dlg.DoModal();

@@ -14,7 +14,7 @@ protected:
 	NOTIFYICONIDENTIFIER m_stSystrayIconIdent { };
 	RECT m_rectSystrayIcon { };
 	HBRUSH m_hbrBlack { }, m_hbrWhite { };
-	CLastminDlg m_stDlgLastmin;
+	CLastminDlg m_stDlgLastMin;
 	HWND m_hwndTooltip { };
 	TOOLINFO m_stToolInfo { };
 	BOOL m_fTooltip = FALSE, m_fToolTipFirstTime = TRUE;

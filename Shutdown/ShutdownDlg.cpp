@@ -42,13 +42,13 @@ BOOL CShutdownDlg::OnInitDialog()
 
 	Shell_NotifyIcon(NIM_ADD, &m_stSystrayIcon);
 
-	//For acquiring icon rect 
+	//For acquiring icon rect.
 	m_stSystrayIconIdent.cbSize = sizeof(NOTIFYICONIDENTIFIER);
 	m_stSystrayIconIdent.hWnd = m_hWnd;
 	m_stSystrayIconIdent.uID = m_uTrayIconId;
 	m_stSystrayIconIdent.guidItem = GUID_NULL;
 
-	//Tooltip window
+	//Tooltip window.
 	m_hwndTooltip = CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, NULL,
 		TTS_BALLOON | TTS_NOPREFIX | TTS_ALWAYSTIP,
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
@@ -56,7 +56,7 @@ BOOL CShutdownDlg::OnInitDialog()
 
 	_tcscpy_s(m_strTooltip, m_pTextNoTime);
 
-	//Initializing tooltip
+	//Initializing tooltip.
 	m_stToolInfo.cbSize = TTTOOLINFO_V1_SIZE;
 	m_stToolInfo.uFlags = TTF_TRACK;
 	m_stToolInfo.uId = m_uTrayIconId;
@@ -80,17 +80,17 @@ BOOL CShutdownDlg::OnInitDialog()
 	m_stSpinMinutes.SetRange(0, 59);
 	m_stSpinMinutes.SetPos(0);
 
-	UDACCEL _stAccel[2];
-	_stAccel[0].nSec = 0; _stAccel[0].nInc = 1;
-	_stAccel[1].nSec = 1; _stAccel[1].nInc = 8;
-	m_stSpinMinutes.SetAccel(2, _stAccel);	//acceleration of minutes_spin
+	UDACCEL stAccel[2];
+	stAccel[0].nSec = 0; stAccel[0].nInc = 1;
+	stAccel[1].nSec = 1; stAccel[1].nInc = 8;
+	m_stSpinMinutes.SetAccel(2, stAccel);	//acceleration of minutes_spin
 
-	CMenu* _pSysMenu = GetSystemMenu(FALSE);
-	_pSysMenu->DeleteMenu(0, MF_BYPOSITION);
-	_pSysMenu->DeleteMenu(1, MF_BYPOSITION);
-	_pSysMenu->DeleteMenu(2, MF_BYPOSITION);
-	_pSysMenu->AppendMenu(MF_SEPARATOR);
-	_pSysMenu->AppendMenu(MF_ENABLED, IDC_MENU_ABOUT, L"About...");
+	CMenu* pSysMenu = GetSystemMenu(FALSE);
+	pSysMenu->DeleteMenu(0, MF_BYPOSITION);
+	pSysMenu->DeleteMenu(1, MF_BYPOSITION);
+	pSysMenu->DeleteMenu(2, MF_BYPOSITION);
+	pSysMenu->AppendMenu(MF_SEPARATOR);
+	pSysMenu->AppendMenu(MF_ENABLED, IDC_MENU_ABOUT, L"About...");
 
 	m_stMenuSystray.CreatePopupMenu();
 	m_stMenuSystray.AppendMenu(MF_OWNERDRAW, IDC_SYSTRAYMENU_SHOW, L"Main window");
@@ -171,13 +171,13 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 			m_unTimeTotal--;
 
 			std::thread beep(Beep, 15000, 350); //calling Beep() in async state->
-			beep.detach(); //->and detaching immidiately 
+			beep.detach(); //->and detaching immidiately.
 
-			INT_PTR dlg_rtrnvalue = m_stDlgLastmin.DoModal();
+			INT_PTR iReturn = m_stDlgLastMin.DoModal();
 
-			if (dlg_rtrnvalue == IDCANCEL)
+			if (iReturn == IDCANCEL)
 				ResetTimer();
-			else if (dlg_rtrnvalue == IDC_POSTPONE_BUTTON)
+			else if (iReturn == IDC_POSTPONE_BUTTON)
 			{
 				m_unTimeTotal = 30;
 				SetTimer(m_uTimerShutdown, 60000, nullptr); //resetting the timer to 30 min.
@@ -286,7 +286,7 @@ void CShutdownDlg::OnSystrayMenuExit()
 void CShutdownDlg::OnSystrayMenuResetTimer()
 {
 	ResetTimer();
-	m_stDlgLastmin.EndDialog(-1); //destroying lastmin dlg if exist
+	m_stDlgLastMin.EndDialog(-1); //destroying lastmin dlg if exist
 }
 
 void CShutdownDlg::OnSystrayMenuShow()
