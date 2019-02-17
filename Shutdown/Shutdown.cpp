@@ -7,17 +7,18 @@ CShutdownApp theApp;
 BOOL CShutdownApp::InitInstance()
 {
 	//==================================================================
-	//Creating mutex for only one instance allowing at time.
-	//If mutex already exist - find window and show it, then return.
+	//Creating mutex for allowing only one instance at the time.
+	//If mutex already exists - find window and show it, then return.
 	//==================================================================
 
-	CreateMutex(nullptr, FALSE, L"ShutDown-34754674");
-
+	CreateMutexW(nullptr, FALSE, m_lpszClassName);
 	if (GetLastError() == ERROR_ALREADY_EXISTS)
 	{
-		HWND hWnd = FindWindow(nullptr, L"Shutdown");
-		ShowWindow(hWnd, SW_SHOWNORMAL);
-		SetForegroundWindow(hWnd);
+		HWND hWnd = FindWindowW((LPCWSTR)m_ClassAtom, L"Shutdown");
+		if (hWnd) {
+			ShowWindow(hWnd, SW_SHOWNORMAL);
+			SetForegroundWindow(hWnd);
+		}
 		return FALSE;
 	}
 
@@ -26,13 +27,13 @@ BOOL CShutdownApp::InitInstance()
 	//to our dialog window - to prevent dialog from having taskbar entry.
 	//Dialog box must have WS_EX_APPWINDOW style set to false.
 	//===================================================================
+	WNDCLASSEXW stClass { sizeof(WNDCLASSEXW), 0, 0, 0, 0, AfxGetInstanceHandle(), 0, 0, 0, 0, m_lpszClassName, 0 };
+	m_ClassAtom = RegisterClassExW(&stClass);
 	CWnd wndMain;
-	wndMain.CreateEx(0, nullptr, nullptr, 0, CW_USEDEFAULT, CW_USEDEFAULT,
-		CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr);
+	wndMain.CreateEx(0, (LPCWSTR)m_ClassAtom, nullptr, 0, 0, 0, 0, 0, nullptr, nullptr);
 
 	CShutdownDlg dlg(&wndMain);
 	m_pMainWnd = &dlg;
-
 	dlg.DoModal();
 
 	return FALSE;
