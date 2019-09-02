@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "LastminDlg.h"
 
 #define TIME_LASTMIN 1
 

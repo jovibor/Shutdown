@@ -1,10 +1,11 @@
 #pragma once
+#include "Resource.h"
 
 class CLastminDlg : public CDialog
 {
 
 public:
-	CLastminDlg(CWnd* pParent = nullptr) : CDialog(IDD_LASTMIN_DIALOG, pParent) {};
+	explicit CLastminDlg(CWnd* pParent = nullptr) : CDialog(IDD_LASTMIN_DIALOG, pParent) {};
 	virtual ~CLastminDlg() {};
 
 protected:

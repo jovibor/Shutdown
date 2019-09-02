@@ -4,7 +4,3 @@
 #define _WIN32_WINNT 0x0601
 
 #include <afxcmn.h>	      // MFC support for Windows Common Controls
-
-#include "Resource.h"
-#include "ShutdownEdit.h"
-#include "LastminDlg.h"

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ShutdownEdit.h"
 
 BEGIN_MESSAGE_MAP(CShutdownEdit, CEdit)
 	//{{AFX_MSG_MAP(CShutdownEdit)

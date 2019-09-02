@@ -3,9 +3,8 @@
 class CShutdownApp : public CWinApp
 {
 public:
-	CShutdownApp() {};
-	virtual BOOL InitInstance();
+	CShutdownApp()noexcept {};
+	BOOL InitInstance()override;
 private:
-	LPCWSTR m_lpszClassName { L"ShutDown - 34754674" };
-	ATOM m_ClassAtom { };
+	const LPCWSTR m_pwszClassName { L"ShutDown - 34754674" };
 };

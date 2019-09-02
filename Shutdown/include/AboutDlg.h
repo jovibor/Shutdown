@@ -1,9 +1,10 @@
 #pragma once
+#include "Resource.h"
 
 class CAboutDlg : public CDialog
 {
 public:
-	CAboutDlg(CWnd* pParent = nullptr) : CDialog(IDD_ABOUT_DIALOG, pParent) {};
+	explicit CAboutDlg(CWnd* pParent = nullptr) : CDialog(IDD_ABOUT_DIALOG, pParent) {};
 protected:
 	BOOL m_fMailtoUnderline = TRUE, m_fGithubUnderline = TRUE;
 	HFONT m_fontNormal = nullptr, m_fontUnderline = nullptr;

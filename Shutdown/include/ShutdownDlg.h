@@ -1,11 +1,14 @@
 #pragma once
+#include "Resource.h"
+#include "ShutdownEdit.h"
+#include "LastminDlg.h"
 
 class CShutdownDlg : public CDialog
 {
 public:
-	CShutdownDlg(CWnd* pParent = nullptr) : CDialog(IDD_SHUTDOWN_DIALOG, pParent) {};
+	explicit CShutdownDlg(CWnd* pParent = nullptr) : CDialog(IDD_SHUTDOWN_DIALOG, pParent) {};
 protected:
-	HICON m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	HICON m_hIcon = AfxGetApp()->LoadIconW(IDR_MAINFRAME);
 	CShutdownEdit m_stEditMinutes, m_stEditHours;
 	CMenu m_stMenuSystray;
 	CSpinButtonCtrl m_stSpinHours, m_stSpinMinutes;
