@@ -16,7 +16,7 @@ BEGIN_MESSAGE_MAP(CLastminDlg, CDialog)
 	ON_BN_CLICKED(IDC_POSTPONE_BUTTON, &CLastminDlg::OnPostponeButton)
 END_MESSAGE_MAP()
 
-HBRUSH CLastminDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CLastminDlg::OnCtlColor(CDC* pDC, CWnd* /*pWnd*/, UINT /*nCtlColor*/)
 {
 	pDC->SetTextColor(RGB(255, 255, 255));
 	pDC->SetBkColor(RGB(0, 0, 0));
@@ -40,7 +40,7 @@ BOOL CLastminDlg::OnInitDialog()
 	return TRUE;
 }
 
-void CLastminDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
+void CLastminDlg::OnDrawItem(int /*nIDCtl*/, LPDRAWITEMSTRUCT lpDIS)
 {
 	CDC *pDC = CDC::FromHandle(lpDIS->hDC);
 
@@ -69,7 +69,7 @@ void CLastminDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
 	}
 }
 
-void CLastminDlg::OnTimer(UINT_PTR nIDEvent)
+void CLastminDlg::OnTimer(UINT_PTR /*nIDEvent*/)
 {
 	WCHAR timer_text[5];
 	if (m_uTimerSec > 9)

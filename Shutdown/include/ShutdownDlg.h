@@ -15,7 +15,7 @@ protected:
 	UINT m_unTimeTotal { };
 	NOTIFYICONDATA m_stSystrayIcon { };
 	NOTIFYICONIDENTIFIER m_stSystrayIconIdent { };
-	RECT m_rectSystrayIcon { };
+	CRect m_rcIcon;
 	HBRUSH m_hbrBlack { }, m_hbrWhite { };
 	CLastminDlg m_stDlgLastMin;
 	HWND m_hwndTooltip { };
@@ -23,8 +23,6 @@ protected:
 	BOOL m_fTooltip = FALSE, m_fToolTipFirstTime = TRUE;
 	WCHAR m_strTooltip[20] { };
 	const unsigned m_uTrayIconId { 1 };
-	const UINT_PTR m_uTimerShutdown { 1 };
-	const UINT_PTR m_uTimerToolTip { 2 };
 	const WCHAR * const m_pTextNoTime { L"No time set" };
 
 	DECLARE_MESSAGE_MAP()

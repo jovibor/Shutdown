@@ -4,6 +4,9 @@
 #include <thread>
 
 constexpr auto WM_TRAY_ICON_MSG = WM_APP + 1;
+constexpr UINT_PTR ID_TIMER_SHUTDOWN { 0x01 };
+constexpr UINT_PTR ID_TIMER_TT_CHECK { 0x10 };
+constexpr UINT_PTR ID_TIMER_TT_ACTIVATE { 0x11 };
 
 void CShutdownDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -63,7 +66,7 @@ BOOL CShutdownDlg::OnInitDialog()
 	m_stToolInfo.lpszText = m_strTooltip;
 
 	//Prepearing tooltip appearance
-	::SendMessageW(m_hwndTooltip, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)& m_stToolInfo);
+	::SendMessageW(m_hwndTooltip, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&m_stToolInfo);
 	::SendMessageW(m_hwndTooltip, TTM_SETTIPBKCOLOR, (WPARAM)RGB(0, 0, 0), 0);
 	::SendMessageW(m_hwndTooltip, TTM_SETTIPTEXTCOLOR, (WPARAM)RGB(255, 255, 255), 0);
 	::SendMessageW(m_hwndTooltip, TTM_SETTITLE, (WPARAM)TTI_NONE, (LPARAM)L"Time to shutdown:");
@@ -135,9 +138,9 @@ void CShutdownDlg::OnSetupButton()
 	m_unTimeTotal = (m_stSpinHours.GetPos() * 60) + m_stSpinMinutes.GetPos();
 	m_stMenuSystray.EnableMenuItem(IDC_SYSTRAYMENU_RESETTIMER, MF_ENABLED);
 	ShowWindow(SW_HIDE);
-	SetTimer(m_uTimerShutdown, 60000, nullptr);
+	SetTimer(ID_TIMER_SHUTDOWN, 60000, nullptr);
 
-	OnTimer(m_uTimerShutdown);
+	OnTimer(ID_TIMER_SHUTDOWN);
 }
 
 void CShutdownDlg::OnMidnightButton()
@@ -151,14 +154,16 @@ void CShutdownDlg::OnMidnightButton()
 
 	m_stMenuSystray.EnableMenuItem(IDC_SYSTRAYMENU_RESETTIMER, MF_ENABLED);
 
-	SetTimer(m_uTimerShutdown, 60000, nullptr);
-	OnTimer(m_uTimerShutdown);
+	SetTimer(ID_TIMER_SHUTDOWN, 60000, nullptr);
+	OnTimer(ID_TIMER_SHUTDOWN);
 	ShowWindow(SW_HIDE);
 }
 
 void CShutdownDlg::OnTimer(UINT nIDEvent)
 {
-	if (nIDEvent == m_uTimerShutdown)
+	switch (nIDEvent)
+	{
+	case ID_TIMER_SHUTDOWN:
 	{
 		UpdateTooltipText();
 
@@ -180,9 +185,9 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 			else if (iReturn == IDC_POSTPONE_BUTTON)
 			{
 				m_unTimeTotal = 30;
-				SetTimer(m_uTimerShutdown, 60000, nullptr); //resetting the timer to 30 min.
+				SetTimer(ID_TIMER_SHUTDOWN, 60000, nullptr); //resetting the timer to 30 min.
 
-				OnTimer(m_uTimerShutdown);
+				OnTimer(ID_TIMER_SHUTDOWN);
 			}
 			break;
 		}
@@ -192,20 +197,50 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 		}
 
 	}
-	else if (nIDEvent == m_uTimerToolTip)
+	break;
+	case ID_TIMER_TT_CHECK:
 	{
-		POINT cur;
-		GetCursorPos(&cur);
-		Shell_NotifyIconGetRect(&m_stSystrayIconIdent, &m_rectSystrayIcon);
+		POINT ptCursor;
+		GetCursorPos(&ptCursor);
+		Shell_NotifyIconGetRect(&m_stSystrayIconIdent, &m_rcIcon);
 
 		//Checking if mouse pointer is within systrayicon rect.
 		//if not — killing tooltip window.
-		if (!(cur.x >= m_rectSystrayIcon.left && cur.x <= m_rectSystrayIcon.right && cur.y >= m_rectSystrayIcon.top && cur.y <= m_rectSystrayIcon.bottom))
+		if (!m_rcIcon.PtInRect(ptCursor))
 		{
-			KillTimer(m_uTimerToolTip);
+			KillTimer(ID_TIMER_TT_CHECK);
 			m_fTooltip = FALSE;
-			::SendMessageW(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)(LPTOOLINFO)& m_stToolInfo);
+			::SendMessageW(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)(LPTOOLINFO)&m_stToolInfo);
 		}
+	}
+	break;
+	case ID_TIMER_TT_ACTIVATE:
+	{
+		POINT ptCursor;
+		GetCursorPos(&ptCursor);
+		Shell_NotifyIconGetRect(&m_stSystrayIconIdent, &m_rcIcon);
+
+		if (m_rcIcon.PtInRect(ptCursor))
+		{
+			//Showing tooltip window if it's already not.
+			//Then in timer proc checking whether cursor pos is out of systray icon rect.
+			if (!m_fTooltip)
+			{
+				m_fTooltip = TRUE;
+
+				//Position tooltip in icon's center
+				::SendMessageW(m_hwndTooltip, TTM_TRACKPOSITION, 0,
+					(LPARAM)MAKELONG((m_rcIcon.right - m_rcIcon.left) / 2 + m_rcIcon.left,
+						(m_rcIcon.bottom - m_rcIcon.top) / 2 + m_rcIcon.top));
+				//Show tooltip window
+				::SendMessageW(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)(LPTOOLINFO)&m_stToolInfo);
+
+				//every 200ms checking whether cursor is still hovering systray icon
+				SetTimer(ID_TIMER_TT_CHECK, 200, NULL);
+			}
+		}
+		KillTimer(ID_TIMER_TT_ACTIVATE);
+	}
 	}
 }
 
@@ -217,7 +252,7 @@ LRESULT CShutdownDlg::OnSystrayIconMessage(WPARAM wParam, LPARAM lParam)
 		ShowWindow(SW_SHOW);
 		break;
 	case WM_RBUTTONDOWN:
-		::SendMessageW(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)(LPTOOLINFO)& m_stToolInfo);//disabling tooltip
+		::SendMessageW(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)(LPTOOLINFO)&m_stToolInfo);//disabling tooltip
 		break;
 	case WM_RBUTTONUP:
 		POINT cur;
@@ -236,25 +271,8 @@ LRESULT CShutdownDlg::OnSystrayIconMessage(WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 
-		//Showing tooltip window if it's already not.
-		//Then in timer proc checking whether cursor pos is out of systray icon rect.
-		//Windows can not do it by itself.
 		if (!m_fTooltip)
-		{
-			m_fTooltip = TRUE;
-
-			Shell_NotifyIconGetRect(&m_stSystrayIconIdent, &m_rectSystrayIcon);
-
-			//Position tooltip in icon's center
-			::SendMessageW(m_hwndTooltip, TTM_TRACKPOSITION, 0,
-				(LPARAM)MAKELONG((m_rectSystrayIcon.right - m_rectSystrayIcon.left) / 2 + m_rectSystrayIcon.left,
-				(m_rectSystrayIcon.bottom - m_rectSystrayIcon.top) / 2 + m_rectSystrayIcon.top));
-			//Show tooltip window
-			::SendMessageW(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)(LPTOOLINFO)& m_stToolInfo);
-
-			//every 200ms checking whether cursor is still hovering systray icon
-			SetTimer(m_uTimerToolTip, 200, NULL);
-		}
+			SetTimer(ID_TIMER_TT_ACTIVATE, 200, NULL);
 		break;
 	}
 
@@ -314,7 +332,7 @@ BOOL CShutdownDlg::PreTranslateMessage(MSG* pMsg)
 
 void CShutdownDlg::OnDestroy()
 {
-	KillTimer(m_uTimerShutdown);
+	KillTimer(ID_TIMER_SHUTDOWN);
 
 	Shell_NotifyIcon(NIM_DELETE, &m_stSystrayIcon);
 	UnregisterHotKey(m_hWnd, 1);
@@ -350,16 +368,16 @@ void CShutdownDlg::UpdateTooltipText()
 		swprintf_s(m_strTooltip, 20, L"%u%s%u%s", m_unTimeTotal / 60, L":0", m_unTimeTotal % 60, L" remaining");
 
 	m_stToolInfo.lpszText = m_strTooltip;
-	::SendMessageW(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)(LPTOOLINFO)& m_stToolInfo);
+	::SendMessageW(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)(LPTOOLINFO)&m_stToolInfo);
 }
 
 void CShutdownDlg::ResetTimer()
 {
-	KillTimer(m_uTimerShutdown);
+	KillTimer(ID_TIMER_SHUTDOWN);
 
 	_tcscpy_s(m_strTooltip, m_pTextNoTime);
 	m_stToolInfo.lpszText = m_strTooltip;
-	::SendMessageW(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)(LPTOOLINFO)& m_stToolInfo);
+	::SendMessageW(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)(LPTOOLINFO)&m_stToolInfo);
 
 	m_stMenuSystray.EnableMenuItem(IDC_SYSTRAYMENU_RESETTIMER, MF_DISABLED);
 }
