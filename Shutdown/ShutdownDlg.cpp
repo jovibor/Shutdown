@@ -224,27 +224,25 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 		{
 			//Showing tooltip window if it's already not.
 			//Then in timer proc checking whether cursor pos is out of systray icon rect.
-			if (!m_fTooltip)
-			{
-				m_fTooltip = TRUE;
 
-				//Position tooltip in icon's center
-				::SendMessageW(m_hwndTooltip, TTM_TRACKPOSITION, 0,
-					(LPARAM)MAKELONG((m_rcIcon.right - m_rcIcon.left) / 2 + m_rcIcon.left,
-						(m_rcIcon.bottom - m_rcIcon.top) / 2 + m_rcIcon.top));
-				//Show tooltip window
-				::SendMessageW(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)(LPTOOLINFO)&m_stToolInfo);
+			//Position tooltip in icon's center
+			::SendMessageW(m_hwndTooltip, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG((m_rcIcon.Width()) / 2 + m_rcIcon.left,
+				(m_rcIcon.Height()) / 2 + m_rcIcon.top));
+			//Show tooltip window
+			::SendMessageW(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)(LPTOOLINFO)&m_stToolInfo);
 
-				//every 200ms checking whether cursor is still hovering systray icon
-				SetTimer(ID_TIMER_TT_CHECK, 200, NULL);
-			}
+			//every 200ms checking whether cursor is still hovering systray icon
+			SetTimer(ID_TIMER_TT_CHECK, 200, NULL);
 		}
+		else
+			m_fTooltip = FALSE;
+
 		KillTimer(ID_TIMER_TT_ACTIVATE);
 	}
 	}
 }
 
-LRESULT CShutdownDlg::OnSystrayIconMessage(WPARAM wParam, LPARAM lParam)
+LRESULT CShutdownDlg::OnSystrayIconMessage(WPARAM /*wParam*/, LPARAM lParam)
 {
 	switch (lParam)
 	{
@@ -272,7 +270,10 @@ LRESULT CShutdownDlg::OnSystrayIconMessage(WPARAM wParam, LPARAM lParam)
 		}
 
 		if (!m_fTooltip)
+		{
 			SetTimer(ID_TIMER_TT_ACTIVATE, 200, NULL);
+			m_fTooltip = TRUE;
+		}
 		break;
 	}
 
@@ -312,7 +313,7 @@ void CShutdownDlg::OnSystrayMenuShow()
 	ShowWindow(SW_SHOW);
 }
 
-LRESULT CShutdownDlg::OnHotKey(WPARAM wParam, LPARAM lParam)
+LRESULT CShutdownDlg::OnHotKey(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	ShutdownPC();
 
@@ -347,7 +348,7 @@ void CShutdownDlg::OnDestroy()
 // Method:    OnCtlColor
 // Change Dlg background color here
 //************************************
-HBRUSH CShutdownDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CShutdownDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT /*nCtlColor*/)
 {
 	// Check for edit-boxes first, we need their bkcolor as white,
 	// the rest dialog is black.	
@@ -382,9 +383,9 @@ void CShutdownDlg::ResetTimer()
 	m_stMenuSystray.EnableMenuItem(IDC_SYSTRAYMENU_RESETTIMER, MF_DISABLED);
 }
 
-void CShutdownDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
+void CShutdownDlg::OnDrawItem(int /*nIDCtl*/, LPDRAWITEMSTRUCT lpDIS)
 {
-	CDC *pDC = CDC::FromHandle(lpDIS->hDC);
+	auto *pDC = CDC::FromHandle(lpDIS->hDC);
 
 	switch (lpDIS->CtlType)
 	{
@@ -419,10 +420,10 @@ void CShutdownDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
 		pDC->SetTextColor(RGB(255, 255, 255));
 		pDC->DrawTextW(buff, &lpDIS->rcItem, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-		if (lpDIS->itemState & ODS_FOCUS)       // If the button has focus
+		if (lpDIS->itemState & ODS_FOCUS)
 		{
 			if (lpDIS->itemState & ODS_SELECTED)
-				pDC->DrawEdge(&lpDIS->rcItem, EDGE_SUNKEN, BF_RECT);    // Draw a sunken face
+				pDC->DrawEdge(&lpDIS->rcItem, EDGE_SUNKEN, BF_RECT); // Draw a sunken face
 
 			lpDIS->rcItem.top += 4;	lpDIS->rcItem.left += 4;
 			lpDIS->rcItem.right -= 4; lpDIS->rcItem.bottom -= 4;
@@ -434,7 +435,7 @@ void CShutdownDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
 	}
 }
 
-void CShutdownDlg::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMIS)
+void CShutdownDlg::OnMeasureItem(int /*nIDCtl*/, LPMEASUREITEMSTRUCT lpMIS)
 {
 	if (lpMIS->CtlType == ODT_MENU)
 	{
