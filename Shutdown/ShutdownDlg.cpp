@@ -34,7 +34,7 @@ BOOL CShutdownDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	RegisterHotKey(m_hWnd, 1, MOD_CONTROL | MOD_ALT, 0x53); //ALT+CTRL+S - to shutdown immediately
+	RegisterHotKey(m_hWnd, 1, MOD_CONTROL | MOD_ALT | MOD_SHIFT, 0x53); //ALT+CTRL+SHIFT+S - to shutdown immediately.
 
 	m_stSystrayIcon.cbSize = sizeof(NOTIFYICONDATA);
 	m_stSystrayIcon.hWnd = m_hWnd;
@@ -120,7 +120,7 @@ BOOL CShutdownDlg::OnInitDialog()
 
 void CShutdownDlg::ShutdownPC()
 {
-	TOKEN_PRIVILEGES tkp;
+	TOKEN_PRIVILEGES tkp { };
 	tkp.PrivilegeCount = 1;
 	tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 	LookupPrivilegeValue(nullptr, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid);
@@ -404,10 +404,14 @@ void CShutdownDlg::OnDrawItem(int /*nIDCtl*/, LPDRAWITEMSTRUCT lpDIS)
 			lpDIS->rcItem.left = 10;
 			pDC->DrawText(reinterpret_cast<LPCTSTR>(lpDIS->itemData), &lpDIS->rcItem, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP);
 		}
-		if ((lpDIS->itemAction & ODA_SELECT) && (lpDIS->itemState & ODS_SELECTED))
-			pDC->FrameRect(&lpDIS->rcItem, &CBrush(RGB(255, 255, 255)));
-		else
-			pDC->FrameRect(&lpDIS->rcItem, &CBrush(RGB(0, 0, 0)));
+		if ((lpDIS->itemAction & ODA_SELECT) && (lpDIS->itemState & ODS_SELECTED)) {
+			auto brush = CBrush(RGB(255, 255, 255));
+			pDC->FrameRect(&lpDIS->rcItem, &brush);
+		}
+		else {
+			auto brush = CBrush(RGB(0, 0, 0));
+			pDC->FrameRect(&lpDIS->rcItem, &brush);
+		}
 		break;
 	}
 	case ODT_BUTTON:

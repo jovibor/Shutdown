@@ -31,7 +31,7 @@ BOOL CAboutDlg::OnInitDialog()
 	return TRUE;
 }
 
-void CAboutDlg::OnMouseMove(UINT nFlags, CPoint point)
+void CAboutDlg::OnMouseMove(UINT /*nFlags*/, CPoint point)
 {
 	CWnd* pWnd = ChildWindowFromPoint(point);
 
@@ -52,7 +52,7 @@ void CAboutDlg::OnMouseMove(UINT nFlags, CPoint point)
 	}
 }
 
-HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT /*nCtlColor*/)
 {
 	pDC->SetBkColor(RGB(0, 0, 0));
 
@@ -73,7 +73,7 @@ HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return m_hbrBlack;
 }
 
-void CAboutDlg::OnLButtonDown(UINT nFlags, CPoint point)
+void CAboutDlg::OnLButtonDown(UINT /*nFlags*/, CPoint point)
 {
 	CWnd* pWnd = ChildWindowFromPoint(point);
 
@@ -93,7 +93,7 @@ void CAboutDlg::OnDestroy()
 	DeleteObject(m_hbrBlack);
 }
 
-void CAboutDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS)
+void CAboutDlg::OnDrawItem(int /*nIDCtl*/, LPDRAWITEMSTRUCT lpDIS)
 {
 	CDC *pDC = CDC::FromHandle(lpDIS->hDC);
 

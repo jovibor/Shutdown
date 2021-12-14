@@ -82,7 +82,7 @@ IDR_MAINFRAME           ICON                    "res\\shutdown.ico"
 //
 
 IDD_SHUTDOWN_DIALOG DIALOGEX 0, 0, 183, 85
-STYLE DS_SETFONT | DS_SETFOREGROUND | DS_CENTER | WS_MINIMIZEBOX | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_SETFOREGROUND | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOPMOST
 CAPTION "Shutdown"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
@@ -103,9 +103,9 @@ CAPTION "About..."
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         "OK",IDOK,"Button",BS_OWNERDRAW | WS_TABSTOP,71,56,40,14
-    CONTROL         "Press Ctrl+Alt+S to shut down system immediately.",IDC_STATIC,
-                    "Static",SS_LEFTNOWORDWRAP | WS_GROUP,13,21,157,8
-    LTEXT           "Shutdown. Version 1.3",IDC_STATIC,55,10,72,8
+    CONTROL         "Press Ctrl+Alt+Shift+S to shut down immediately.",IDC_STATIC,
+                    "Static",SS_LEFTNOWORDWRAP | WS_GROUP,15,21,152,8
+    LTEXT           "Shutdown. Version 1.4",IDC_STATIC,55,10,72,8
     LTEXT           "eaxedx@gmail.com",IDC_MAILTO,61,43,62,8,NOT WS_GROUP
     LTEXT           "https://github.com/jovibor/Shutdown",IDC_HTTPGITHUB,32,32,119,8
     GROUPBOX        "",IDC_STATIC,3,2,177,79

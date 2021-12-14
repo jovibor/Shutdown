@@ -31,7 +31,7 @@ BOOL CShutdownApp::InitInstance()
 		nullptr, nullptr, nullptr, nullptr, m_pwszClassName, nullptr };
 	RegisterClassExW(&stClass);
 	CWnd wndMain;
-	wndMain.CreateEx(0, m_pwszClassName, nullptr, 0, 0, 0, 0, 0, nullptr, nullptr);
+	wndMain.CreateEx(0, m_pwszClassName, nullptr, WS_POPUP, 0, 0, 0, 0, nullptr, nullptr);
 
 	CShutdownDlg dlg(&wndMain);
 	m_pMainWnd = &dlg;
