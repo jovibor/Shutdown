@@ -11,10 +11,9 @@ BOOL CShutdownApp::InitInstance()
 	//If mutex already exists - find window and show it, then return.
 	//==================================================================
 
-	auto hMutex = CreateMutexW(nullptr, FALSE, m_pwszClassName);
-	if (!hMutex || GetLastError() == ERROR_ALREADY_EXISTS)
-	{
-		HWND hWnd = FindWindowExW(nullptr, nullptr, nullptr, L"Shutdown");
+	const auto hMutex = CreateMutexW(nullptr, FALSE, m_pwszClassName);
+	if (!hMutex || GetLastError() == ERROR_ALREADY_EXISTS) {
+		const auto hWnd = FindWindowExW(nullptr, nullptr, nullptr, L"Shutdown");
 		if (hWnd) {
 			ShowWindow(hWnd, SW_SHOWNORMAL);
 			SetForegroundWindow(hWnd);
@@ -27,7 +26,7 @@ BOOL CShutdownApp::InitInstance()
 	//to our dialog window - to prevent dialog from having taskbar entry.
 	//Dialog box must have WS_EX_APPWINDOW style set to false.
 	//===================================================================
-	WNDCLASSEXW stClass { sizeof(WNDCLASSEXW), 0, nullptr, 0, 0, AfxGetInstanceHandle(),
+	const WNDCLASSEXW stClass { sizeof(WNDCLASSEXW), 0, nullptr, 0, 0, AfxGetInstanceHandle(),
 		nullptr, nullptr, nullptr, nullptr, m_pwszClassName, nullptr };
 	RegisterClassExW(&stClass);
 	CWnd wndMain;

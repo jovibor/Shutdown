@@ -1,12 +1,8 @@
 #include "stdafx.h"
 #include "LastminDlg.h"
+#include "Resource.h"
 
-#define TIME_LASTMIN 1
-
-void CLastminDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-}
+constexpr auto TIME_LASTMIN = 1;
 
 BEGIN_MESSAGE_MAP(CLastminDlg, CDialog)
 	ON_WM_CTLCOLOR()
@@ -15,6 +11,15 @@ BEGIN_MESSAGE_MAP(CLastminDlg, CDialog)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_POSTPONE_BUTTON, &CLastminDlg::OnPostponeButton)
 END_MESSAGE_MAP()
+
+CLastminDlg::CLastminDlg(CWnd* pParent) : CDialog(IDD_LASTMIN_DIALOG, pParent)
+{
+}
+
+void CLastminDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CDialog::DoDataExchange(pDX);
+}
 
 HBRUSH CLastminDlg::OnCtlColor(CDC* pDC, CWnd* /*pWnd*/, UINT /*nCtlColor*/)
 {
@@ -48,15 +53,14 @@ void CLastminDlg::OnDrawItem(int /*nIDCtl*/, LPDRAWITEMSTRUCT lpDIS)
 	case ODT_BUTTON:
 	{
 		WCHAR buff[128];
-		::GetWindowText(lpDIS->hwndItem, buff, 128);
+		::GetWindowTextW(lpDIS->hwndItem, buff, 128);
 
 		pDC->FillSolidRect(&lpDIS->rcItem, RGB(0, 0, 0)); //Button color
 		pDC->DrawEdge(&lpDIS->rcItem, EDGE_RAISED, BF_RECT);
 		pDC->SetTextColor(RGB(255, 255, 255));
-		pDC->DrawText(buff, &lpDIS->rcItem, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		pDC->DrawTextW(buff, &lpDIS->rcItem, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-		if (lpDIS->itemState & ODS_FOCUS)       // If the button has focus
-		{
+		if (lpDIS->itemState & ODS_FOCUS) { // If the button has focus
 			if (lpDIS->itemState & ODS_SELECTED)
 				pDC->DrawEdge(&lpDIS->rcItem, EDGE_SUNKEN, BF_RECT);    // Draw a sunken face
 
@@ -77,10 +81,11 @@ void CLastminDlg::OnTimer(UINT_PTR /*nIDEvent*/)
 	else
 		swprintf_s(timer_text, 5, L"%s%u", L"0:0", m_uTimerSec);
 
-	SetDlgItemText(IDC_LASTMIN_TIMER, timer_text);
+	SetDlgItemTextW(IDC_LASTMIN_TIMER, timer_text);
 
-	if (m_uTimerSec-- == 0)
+	if (m_uTimerSec-- == 0) {
 		KillTimer(TIME_LASTMIN);
+	}
 }
 
 void CLastminDlg::OnDestroy()
@@ -95,8 +100,7 @@ void CLastminDlg::OnPostponeButton()
 
 BOOL CLastminDlg::PreTranslateMessage(MSG* pMsg)
 {
-	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
-	{
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN) {
 		EndDialog(GetFocus()->GetDlgCtrlID()); //Ending dialog with active (in focus) button exit code.
 
 		return TRUE;

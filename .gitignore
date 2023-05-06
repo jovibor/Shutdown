@@ -2,6 +2,7 @@
 ## Eclipse
 #################
 
+*.exe
 *.pydevproject
 .project
 .metadata
@@ -39,10 +40,10 @@ local.properties
 .vs/
 
 # User-specific files
+*.suppress
 *.suo
 *.user
 *.sln.docstates
-*.filters
 *.opendb
 
 # Build results
@@ -222,3 +223,5 @@ pip-log.txt
 .mr.developer.cfg
 *.db
 *.db
+##################
+!libpe/verinfo/*

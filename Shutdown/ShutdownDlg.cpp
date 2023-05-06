@@ -1,6 +1,7 @@
 #include "stdafx.h"
+#include "Resource.h"
 #include "ShutdownDlg.h"
-#include "Aboutdlg.h"
+#include "AboutDlg.h"
 #include <thread>
 
 constexpr auto WM_TRAY_ICON_MSG = WM_APP + 1;
@@ -8,11 +9,12 @@ constexpr UINT_PTR ID_TIMER_SHUTDOWN { 0x01 };
 constexpr UINT_PTR ID_TIMER_TT_CHECK { 0x10 };
 constexpr UINT_PTR ID_TIMER_TT_ACTIVATE { 0x11 };
 
-void CShutdownDlg::DoDataExchange(CDataExchange* pDX)
-{
-	DDX_Control(pDX, IDC_EDIT_HOURS, m_stEditHours);
-	DDX_Control(pDX, IDC_EDIT_MINUTES, m_stEditMinutes);
-}
+BEGIN_MESSAGE_MAP(CShutdownEdit, CEdit)
+	ON_WM_SETCURSOR()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_RBUTTONDOWN()
+	ON_WM_SETFOCUS()
+END_MESSAGE_MAP()
 
 BEGIN_MESSAGE_MAP(CShutdownDlg, CDialog)
 	ON_BN_CLICKED(IDC_SETUP_BUTTON, OnSetupButton)
@@ -30,42 +32,48 @@ BEGIN_MESSAGE_MAP(CShutdownDlg, CDialog)
 	ON_WM_MEASUREITEM()
 END_MESSAGE_MAP()
 
+void CShutdownDlg::DoDataExchange(CDataExchange* pDX)
+{
+	DDX_Control(pDX, IDC_EDIT_HOURS, m_stEditHours);
+	DDX_Control(pDX, IDC_EDIT_MINUTES, m_stEditMinutes);
+}
+
 BOOL CShutdownDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
 	RegisterHotKey(m_hWnd, 1, MOD_CONTROL | MOD_ALT | MOD_SHIFT, 0x53); //ALT+CTRL+SHIFT+S - to shutdown immediately.
 
+	constexpr auto uTrayIconID { 1UL };
+	auto hIcon = AfxGetApp()->LoadIconW(IDR_MAINFRAME);
+
 	m_stSystrayIcon.cbSize = sizeof(NOTIFYICONDATA);
 	m_stSystrayIcon.hWnd = m_hWnd;
-	m_stSystrayIcon.uID = m_uTrayIconId;
+	m_stSystrayIcon.uID = uTrayIconID;
 	m_stSystrayIcon.uFlags = NIF_ICON | NIF_MESSAGE;
 	m_stSystrayIcon.uCallbackMessage = WM_TRAY_ICON_MSG;
-	m_stSystrayIcon.hIcon = m_hIcon;
+	m_stSystrayIcon.hIcon = hIcon;
 
-	Shell_NotifyIcon(NIM_ADD, &m_stSystrayIcon);
+	Shell_NotifyIconW(NIM_ADD, &m_stSystrayIcon);
 
 	//For acquiring icon rect.
 	m_stSystrayIconIdent.cbSize = sizeof(NOTIFYICONIDENTIFIER);
 	m_stSystrayIconIdent.hWnd = m_hWnd;
-	m_stSystrayIconIdent.uID = m_uTrayIconId;
+	m_stSystrayIconIdent.uID = uTrayIconID;
 	m_stSystrayIconIdent.guidItem = GUID_NULL;
 
 	//Tooltip window.
-	m_hwndTooltip = CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, NULL,
-		TTS_BALLOON | TTS_NOPREFIX | TTS_ALWAYSTIP,
-		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-		NULL, NULL, NULL, NULL);
+	m_hwndTooltip = CreateWindowExW(WS_EX_TOPMOST, TOOLTIPS_CLASS, nullptr,
+		TTS_BALLOON | TTS_NOPREFIX | TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		nullptr, nullptr, nullptr, nullptr);
 
-	_tcscpy_s(m_strTooltip, m_pTextNoTime);
+	wcscpy_s(m_strTooltip, m_pTextNoTime);
 
 	//Initializing tooltip.
-	m_stToolInfo.cbSize = TTTOOLINFO_V1_SIZE;
+	m_stToolInfo.cbSize = sizeof(TTTOOLINFOW);
 	m_stToolInfo.uFlags = TTF_TRACK;
-	m_stToolInfo.uId = m_uTrayIconId;
+	m_stToolInfo.uId = uTrayIconID;
 	m_stToolInfo.lpszText = m_strTooltip;
-
-	//Prepearing tooltip appearance
 	::SendMessageW(m_hwndTooltip, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&m_stToolInfo);
 	::SendMessageW(m_hwndTooltip, TTM_SETTIPBKCOLOR, (WPARAM)RGB(0, 0, 0), 0);
 	::SendMessageW(m_hwndTooltip, TTM_SETTIPTEXTCOLOR, (WPARAM)RGB(255, 255, 255), 0);
@@ -88,7 +96,7 @@ BOOL CShutdownDlg::OnInitDialog()
 	stAccel[1].nSec = 1; stAccel[1].nInc = 8;
 	m_stSpinMinutes.SetAccel(2, stAccel);	//acceleration of minutes_spin
 
-	CMenu* pSysMenu = GetSystemMenu(FALSE);
+	const auto pSysMenu = GetSystemMenu(FALSE);
 	pSysMenu->DeleteMenu(0, MF_BYPOSITION);
 	pSysMenu->DeleteMenu(1, MF_BYPOSITION);
 	pSysMenu->DeleteMenu(2, MF_BYPOSITION);
@@ -103,14 +111,12 @@ BOOL CShutdownDlg::OnInitDialog()
 	m_hbrBlack = CreateSolidBrush(RGB(0, 0, 0));
 	m_hbrWhite = CreateSolidBrush(RGB(255, 255, 255));
 
-	SetIcon(m_hIcon, TRUE);
-	SetIcon(m_hIcon, FALSE);
+	SetIcon(hIcon, TRUE);
+	SetIcon(hIcon, FALSE);
 
-	// Parsing cmnLine params
-	// If "-m" then going to midnight mode
-	// and minimizing main window.
-	if (wcsstr(AfxGetApp()->m_lpCmdLine, L"-m"))
-	{
+	//Parsing cmdLine params:
+	//If "-m" then going to midnight mode and minimizing main window.
+	if (wcsstr(AfxGetApp()->m_lpCmdLine, L"-m")) {
 		OnMidnightButton();
 		PostMessageW(WM_SYSCOMMAND, SC_MINIMIZE, 0);
 	}
@@ -123,7 +129,7 @@ void CShutdownDlg::ShutdownPC()
 	TOKEN_PRIVILEGES tkp { };
 	tkp.PrivilegeCount = 1;
 	tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-	LookupPrivilegeValue(nullptr, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid);
+	LookupPrivilegeValueW(nullptr, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid);
 
 	HANDLE hToken;
 	OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
@@ -145,11 +151,11 @@ void CShutdownDlg::OnSetupButton()
 
 void CShutdownDlg::OnMidnightButton()
 {
-	const time_t t = time(0);
+	const time_t t = time(nullptr);
 	tm now;
 	localtime_s(&now, &t);
 
-	//minutes left to midnight
+	//minutes left to midnight.
 	m_unTimeTotal = (24 - now.tm_hour) * 60 - now.tm_min;
 
 	m_stMenuSystray.EnableMenuItem(IDC_SYSTRAYMENU_RESETTIMER, MF_ENABLED);
@@ -159,22 +165,20 @@ void CShutdownDlg::OnMidnightButton()
 	ShowWindow(SW_HIDE);
 }
 
-void CShutdownDlg::OnTimer(UINT nIDEvent)
+void CShutdownDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	switch (nIDEvent)
-	{
+	switch (nIDEvent) {
 	case ID_TIMER_SHUTDOWN:
 	{
 		UpdateTooltipText();
 
-		switch (m_unTimeTotal) {//time in minutes to shutdown
+		switch (m_unTimeTotal) { //Time in minutes to shutdown.
 		case 0:
 			ShutdownPC();
 			break;
 		case 1:
 		{
-			m_unTimeTotal--;
-
+			--m_unTimeTotal;
 			std::thread beep(Beep, 15000, 350); //calling Beep() in async state->
 			beep.detach(); //->and detaching immediately.
 
@@ -182,18 +186,15 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 
 			if (iReturn == IDCANCEL)
 				ResetTimer();
-			else if (iReturn == IDC_POSTPONE_BUTTON)
-			{
+			else if (iReturn == IDC_POSTPONE_BUTTON) {
 				m_unTimeTotal = 30;
 				SetTimer(ID_TIMER_SHUTDOWN, 60000, nullptr); //resetting the timer to 30 min.
-
 				OnTimer(ID_TIMER_SHUTDOWN);
 			}
-			break;
 		}
-
+		break;
 		default:
-			m_unTimeTotal--;
+			--m_unTimeTotal;
 		}
 
 	}
@@ -206,10 +207,9 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 
 		//Checking if mouse pointer is within systrayicon rect.
 		//if not — killing tooltip window.
-		if (!m_rcIcon.PtInRect(ptCursor))
-		{
+		if (!m_rcIcon.PtInRect(ptCursor)) {
 			KillTimer(ID_TIMER_TT_CHECK);
-			m_fTooltip = FALSE;
+			m_fTooltip = false;
 			::SendMessageW(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)(LPTOOLINFO)&m_stToolInfo);
 		}
 	}
@@ -220,8 +220,7 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 		GetCursorPos(&ptCursor);
 		Shell_NotifyIconGetRect(&m_stSystrayIconIdent, &m_rcIcon);
 
-		if (m_rcIcon.PtInRect(ptCursor))
-		{
+		if (m_rcIcon.PtInRect(ptCursor)) {
 			//Showing tooltip window if it's already not.
 			//Then in timer proc checking whether cursor pos is out of systray icon rect.
 
@@ -232,10 +231,11 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 			::SendMessageW(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)(LPTOOLINFO)&m_stToolInfo);
 
 			//every 200ms checking whether cursor is still hovering systray icon
-			SetTimer(ID_TIMER_TT_CHECK, 200, NULL);
+			SetTimer(ID_TIMER_TT_CHECK, 200, nullptr);
 		}
-		else
-			m_fTooltip = FALSE;
+		else {
+			m_fTooltip = false;
+		}
 
 		KillTimer(ID_TIMER_TT_ACTIVATE);
 	}
@@ -244,8 +244,7 @@ void CShutdownDlg::OnTimer(UINT nIDEvent)
 
 LRESULT CShutdownDlg::OnSystrayIconMessage(WPARAM /*wParam*/, LPARAM lParam)
 {
-	switch (lParam)
-	{
+	switch (lParam) {
 	case WM_LBUTTONDBLCLK:
 		ShowWindow(SW_SHOW);
 		break;
@@ -263,16 +262,14 @@ LRESULT CShutdownDlg::OnSystrayIconMessage(WPARAM /*wParam*/, LPARAM lParam)
 		//it sends WM_MOUSEMOVE message to main window (even if mouse is far away from systray)
 		//which forces tooltip window to show up at the current cursor pos. 
 		//This flag is just to prevent it. 
-		if (m_fToolTipFirstTime)
-		{
-			m_fToolTipFirstTime = FALSE;
+		if (m_fToolTipFirstTime) {
+			m_fToolTipFirstTime = false;
 			return 0;
 		}
 
-		if (!m_fTooltip)
-		{
-			SetTimer(ID_TIMER_TT_ACTIVATE, 200, NULL);
-			m_fTooltip = TRUE;
+		if (!m_fTooltip) {
+			SetTimer(ID_TIMER_TT_ACTIVATE, 200, nullptr);
+			m_fTooltip = true;
 		}
 		break;
 	}
@@ -280,20 +277,21 @@ LRESULT CShutdownDlg::OnSystrayIconMessage(WPARAM /*wParam*/, LPARAM lParam)
 	return 0;
 }
 
-void CShutdownDlg::OnSysCommand(UINT nID, LPARAM wParam)
+void CShutdownDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
-	switch (nID)
-	{
+	switch (nID) {
 	case SC_MINIMIZE:
 		ShowWindow(SW_HIDE);
 		break;
-	case IDC_MENU_ABOUT: {
+	case IDC_MENU_ABOUT:
+	{
 		CAboutDlg about_dlg;
 		about_dlg.DoModal();
-		break;
 	}
+	break;
 	default:
-		CDialog::OnSysCommand(nID, wParam);
+		CDialog::OnSysCommand(nID, lParam);
+		break;
 	}
 }
 
@@ -316,14 +314,16 @@ void CShutdownDlg::OnSystrayMenuShow()
 LRESULT CShutdownDlg::OnHotKey(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	ShutdownPC();
-
 	return 0;
+}
+
+CShutdownDlg::CShutdownDlg(CWnd * pParent) : CDialog(IDD_SHUTDOWN_DIALOG, pParent)
+{
 }
 
 BOOL CShutdownDlg::PreTranslateMessage(MSG* pMsg)
 {
-	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
-	{
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN) {
 		OnSetupButton();
 		return TRUE;
 	}
@@ -335,19 +335,14 @@ void CShutdownDlg::OnDestroy()
 {
 	KillTimer(ID_TIMER_SHUTDOWN);
 
-	Shell_NotifyIcon(NIM_DELETE, &m_stSystrayIcon);
+	Shell_NotifyIconW(NIM_DELETE, &m_stSystrayIcon);
 	UnregisterHotKey(m_hWnd, 1);
 	m_stMenuSystray.DestroyMenu();
 	DeleteObject(m_hbrBlack);
 	DeleteObject(m_hbrWhite);
-
 	::DestroyWindow(m_hwndTooltip);
 }
 
-//************************************
-// Method:    OnCtlColor
-// Change Dlg background color here
-//************************************
 HBRUSH CShutdownDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT /*nCtlColor*/)
 {
 	// Check for edit-boxes first, we need their bkcolor as white,
@@ -376,7 +371,7 @@ void CShutdownDlg::ResetTimer()
 {
 	KillTimer(ID_TIMER_SHUTDOWN);
 
-	_tcscpy_s(m_strTooltip, m_pTextNoTime);
+	wcscpy_s(m_strTooltip, m_pTextNoTime);
 	m_stToolInfo.lpszText = m_strTooltip;
 	::SendMessageW(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)(LPTOOLINFO)&m_stToolInfo);
 
@@ -387,12 +382,10 @@ void CShutdownDlg::OnDrawItem(int /*nIDCtl*/, LPDRAWITEMSTRUCT lpDIS)
 {
 	auto *pDC = CDC::FromHandle(lpDIS->hDC);
 
-	switch (lpDIS->CtlType)
-	{
+	switch (lpDIS->CtlType) {
 	case ODT_MENU:
 	{
-		if (lpDIS->itemAction & ODA_DRAWENTIRE)
-		{
+		if (lpDIS->itemAction & ODA_DRAWENTIRE) {
 			pDC->FillSolidRect(&lpDIS->rcItem, RGB(0, 0, 0));
 			pDC->SetBkColor(RGB(0, 0, 0));
 
@@ -402,7 +395,7 @@ void CShutdownDlg::OnDrawItem(int /*nIDCtl*/, LPDRAWITEMSTRUCT lpDIS)
 				pDC->SetTextColor(RGB(255, 255, 255));
 
 			lpDIS->rcItem.left = 10;
-			pDC->DrawText(reinterpret_cast<LPCTSTR>(lpDIS->itemData), &lpDIS->rcItem, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP);
+			pDC->DrawTextW(reinterpret_cast<LPCTSTR>(lpDIS->itemData), &lpDIS->rcItem, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP);
 		}
 		if ((lpDIS->itemAction & ODA_SELECT) && (lpDIS->itemState & ODS_SELECTED)) {
 			auto brush = CBrush(RGB(255, 255, 255));
@@ -424,8 +417,7 @@ void CShutdownDlg::OnDrawItem(int /*nIDCtl*/, LPDRAWITEMSTRUCT lpDIS)
 		pDC->SetTextColor(RGB(255, 255, 255));
 		pDC->DrawTextW(buff, &lpDIS->rcItem, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-		if (lpDIS->itemState & ODS_FOCUS)
-		{
+		if (lpDIS->itemState & ODS_FOCUS) {
 			if (lpDIS->itemState & ODS_SELECTED)
 				pDC->DrawEdge(&lpDIS->rcItem, EDGE_SUNKEN, BF_RECT); // Draw a sunken face
 
@@ -441,8 +433,7 @@ void CShutdownDlg::OnDrawItem(int /*nIDCtl*/, LPDRAWITEMSTRUCT lpDIS)
 
 void CShutdownDlg::OnMeasureItem(int /*nIDCtl*/, LPMEASUREITEMSTRUCT lpMIS)
 {
-	if (lpMIS->CtlType == ODT_MENU)
-	{
+	if (lpMIS->CtlType == ODT_MENU) {
 		lpMIS->itemWidth = 85;
 		lpMIS->itemHeight = 20;
 	}
