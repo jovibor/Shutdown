@@ -1,5 +1,6 @@
 #pragma once
 #include "LastminDlg.h"
+#include <string>
 
 class CShutdownEdit : public CEdit
 {
@@ -28,7 +29,6 @@ private:
 	void OnTimer(UINT_PTR nIDEvent);
 	void OnDestroy();
 	void OnSysCommand(UINT nID, LPARAM lParam);
-	LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
 	LRESULT OnSystrayIconMessage(WPARAM wParam, LPARAM lParam);
 	HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDIS);
@@ -53,5 +53,5 @@ private:
 	TTTOOLINFOW m_stToolInfo { };
 	bool m_fTooltip { false };
 	bool m_fToolTipFirstTime { true };
-	WCHAR m_strTooltip[20] { };
+	std::wstring m_strTooltip { };
 };

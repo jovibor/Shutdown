@@ -27,7 +27,7 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 
 1 TEXTINCLUDE 
 BEGIN
-    "include\\resource.h\0"
+    "resource.h\0"
 END
 
 2 TEXTINCLUDE 
@@ -81,14 +81,14 @@ IDR_MAINFRAME           ICON                    "res\\shutdown.ico"
 // Dialog
 //
 
-IDD_SHUTDOWN_DIALOG DIALOGEX 0, 0, 183, 85
+IDD_SHUTDOWN_DIALOG DIALOGEX 0, 0, 183, 83
 STYLE DS_SETFONT | DS_SETFOREGROUND | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOPMOST
 CAPTION "Shutdown"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         "Set up",IDC_SETUP_BUTTON,"Button",BS_OWNERDRAW | WS_TABSTOP,67,47,49,14
-    GROUPBOX        "Set time to shut down your system:",IDC_STATIC,7,7,169,71,BS_CENTER | BS_FLAT
+    GROUPBOX        "Set the time to shutdown your system:",IDC_STATIC_GB,6,8,172,67,BS_CENTER
     LTEXT           "Hours:",IDC_STATIC,14,25,22,8
     LTEXT           "Minutes:",IDC_STATIC,86,25,28,8
     EDITTEXT        IDC_EDIT_HOURS,40,23,40,14,ES_READONLY | ES_NUMBER
@@ -96,19 +96,17 @@ BEGIN
     CONTROL         "M",IDC_MIDNIGHT_BUTTON,"Button",BS_OWNERDRAW | WS_TABSTOP,159,24,14,11
 END
 
-IDD_ABOUT_DIALOG DIALOGEX 0, 0, 183, 84
+IDD_ABOUT_DIALOG DIALOGEX 0, 0, 183, 70
 STYLE DS_SETFONT | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "About..."
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    CONTROL         "OK",IDOK,"Button",BS_OWNERDRAW | WS_TABSTOP,71,56,40,14
-    CONTROL         "Press Ctrl+Alt+Shift+S to shut down immediately.",IDC_STATIC,
-                    "Static",SS_LEFTNOWORDWRAP | WS_GROUP,15,21,152,8
-    LTEXT           "Shutdown. Version 1.4",IDC_STATIC,55,10,72,8
-    LTEXT           "eaxedx@gmail.com",IDC_MAILTO,61,43,62,8,NOT WS_GROUP
-    LTEXT           "https://github.com/jovibor/Shutdown",IDC_HTTPGITHUB,32,32,119,8
-    GROUPBOX        "",IDC_STATIC,3,2,177,79
+    CONTROL         "OK",IDOK,"Button",BS_OWNERDRAW | WS_TABSTOP,71,45,40,14
+    LTEXT           "Shutdown. Version 1.5",IDC_STATIC,55,10,72,8
+    LTEXT           "eaxedx@gmail.com",IDC_MAILTO,61,32,62,8,NOT WS_GROUP
+    LTEXT           "https://github.com/jovibor/Shutdown",IDC_HTTPGITHUB,32,21,119,8
+    GROUPBOX        "",IDC_STATIC,3,0,176,68
 END
 
 IDD_LASTMIN_DIALOG DIALOGEX 0, 0, 179, 81
@@ -119,7 +117,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "Postpone for 30 min.",IDC_POSTPONE_BUTTON,"Button",BS_OWNERDRAW | WS_TABSTOP,81,38,81,16
     CONTROL         "Abort...",IDCANCEL,"Button",BS_OWNERDRAW | WS_TABSTOP,20,38,52,16
-    GROUPBOX        "System is shutting down in:",IDC_STATIC,7,6,165,64,BS_CENTER
+    GROUPBOX        "System is shutting down in:",IDC_STATIC,4,6,172,64,BS_CENTER
     LTEXT           "",IDC_LASTMIN_TIMER,79,23,20,8
 END
 
@@ -134,10 +132,6 @@ GUIDELINES DESIGNINFO
 BEGIN
     IDD_SHUTDOWN_DIALOG, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 176
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 78
     END
 
     IDD_ABOUT_DIALOG, DIALOG
@@ -146,10 +140,6 @@ BEGIN
 
     IDD_LASTMIN_DIALOG, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 172
-        TOPMARGIN, 1
-        BOTTOMMARGIN, 73
     END
 END
 #endif    // APSTUDIO_INVOKED
