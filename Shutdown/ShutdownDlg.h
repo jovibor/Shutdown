@@ -2,8 +2,7 @@
 #include "LastminDlg.h"
 #include <string>
 
-class CShutdownEdit : public CEdit
-{
+class CShutdownEdit : public CEdit {
 private:
 	BOOL OnSetCursor(CWnd*, UINT, UINT) { return TRUE; };
 	void OnLButtonDown(UINT, CPoint) { };
@@ -12,14 +11,13 @@ private:
 	DECLARE_MESSAGE_MAP();
 };
 
-class CShutdownDlg : public CDialog
-{
+class CShutdownDlg : public CDialog {
 public:
 	explicit CShutdownDlg(CWnd* pParent = nullptr);
 private:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog();
+	BOOL PreTranslateMessage(MSG* pMsg)override;
+	void DoDataExchange(CDataExchange* pDX)override;
+	BOOL OnInitDialog()override;
 	void OnSystrayMenuShow();
 	void OnSystrayMenuResetTimer();
 	void OnSystrayMenuExit();
@@ -45,7 +43,7 @@ private:
 	CLastminDlg m_stDlgLastMin;
 	CMenu m_stMenuSystray;
 	UINT m_unTimeTotal { };
-	NOTIFYICONDATA m_stSystrayIcon { };
+	NOTIFYICONDATAW m_stSystrayIcon { };
 	NOTIFYICONIDENTIFIER m_stSystrayIconIdent { };
 	CRect m_rcIcon;
 	HBRUSH m_hbrBlack { }, m_hbrWhite { };

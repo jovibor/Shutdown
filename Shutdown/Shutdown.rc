@@ -1,5 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
+#pragma code_page(65001)
+
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -13,11 +15,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Russian (Russia) resources
+// English (United States) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
-LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
-#pragma code_page(1251)
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -55,16 +56,6 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Russian (Russia) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -81,14 +72,15 @@ IDR_MAINFRAME           ICON                    "res\\shutdown.ico"
 // Dialog
 //
 
-IDD_SHUTDOWN_DIALOG DIALOGEX 0, 0, 183, 83
+IDD_SHUTDOWN_DIALOG DIALOGEX 0, 0, 183, 80
 STYLE DS_SETFONT | DS_SETFOREGROUND | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-EXSTYLE WS_EX_TOPMOST
+EXSTYLE WS_EX_PALETTEWINDOW
 CAPTION "Shutdown"
+CLASS "Shutdown{34754674}"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         "Set up",IDC_SETUP_BUTTON,"Button",BS_OWNERDRAW | WS_TABSTOP,67,47,49,14
-    GROUPBOX        "Set the time to shutdown your system:",IDC_STATIC_GB,6,8,172,67,BS_CENTER
+    GROUPBOX        "Set the time to shutdown your system:",IDC_STATIC_GB,6,5,172,67,BS_CENTER
     LTEXT           "Hours:",IDC_STATIC,14,25,22,8
     LTEXT           "Minutes:",IDC_STATIC,86,25,28,8
     EDITTEXT        IDC_EDIT_HOURS,40,23,40,14,ES_READONLY | ES_NUMBER
@@ -96,7 +88,7 @@ BEGIN
     CONTROL         "M",IDC_MIDNIGHT_BUTTON,"Button",BS_OWNERDRAW | WS_TABSTOP,159,24,14,11
 END
 
-IDD_ABOUT_DIALOG DIALOGEX 0, 0, 183, 70
+IDD_ABOUT_DIALOG DIALOGEX 0, 0, 183, 72
 STYLE DS_SETFONT | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "About..."
@@ -109,15 +101,15 @@ BEGIN
     GROUPBOX        "",IDC_STATIC,3,0,176,68
 END
 
-IDD_LASTMIN_DIALOG DIALOGEX 0, 0, 179, 81
+IDD_LASTMIN_DIALOG DIALOGEX 0, 0, 179, 73
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOPMOST
-CAPTION "Last minute warning..."
+CAPTION "Last Minute Warning!"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "Postpone for 30 min.",IDC_POSTPONE_BUTTON,"Button",BS_OWNERDRAW | WS_TABSTOP,81,38,81,16
-    CONTROL         "Abort...",IDCANCEL,"Button",BS_OWNERDRAW | WS_TABSTOP,20,38,52,16
-    GROUPBOX        "System is shutting down in:",IDC_STATIC,4,6,172,64,BS_CENTER
+    CONTROL         "Postpone for 30 min.",IDC_POSTPONE_BUTTON,"Button",BS_OWNERDRAW | WS_TABSTOP,81,35,81,16
+    CONTROL         "Abort...",IDCANCEL,"Button",BS_OWNERDRAW | WS_TABSTOP,20,35,52,16
+    GROUPBOX        "System is shutting down in:",IDC_STATIC,4,3,172,64,BS_CENTER
     LTEXT           "",IDC_LASTMIN_TIMER,79,23,20,8
 END
 

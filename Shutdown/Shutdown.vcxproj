@@ -302,18 +302,15 @@
   <ItemGroup>
     <ClCompile Include="LastminDlg.cpp" />
     <ClCompile Include="Shutdown.cpp" />
-    <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="ShutdownDlg.cpp" />
-    <ClCompile Include="StdAfx.cpp">
+    <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="LastminDlg.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="Shutdown.h" />
     <ClInclude Include="ShutdownDlg.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
