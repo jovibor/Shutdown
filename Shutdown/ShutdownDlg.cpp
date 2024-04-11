@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Resource.h"
 #include "ShutdownDlg.h"
-#include <thread>
 
 constexpr auto WM_TRAY_ICON_MSG = WM_APP + 1;
 constexpr UINT_PTR ID_TIMER_SHUTDOWN { 0x01 };
@@ -23,8 +22,8 @@ private:
 private:
 	bool m_fMailtoUnderline { true };
 	bool m_fGithubUnderline { true };
-	HFONT m_fontNormal { };
-	HFONT m_fontUnderline { };
+	CFont m_fntDef;
+	CFont m_fntUnderline;
 	HCURSOR m_curHand { };
 	HCURSOR m_curArrow { };
 	HBRUSH m_hbrBlack { };
@@ -43,11 +42,13 @@ BOOL CAboutDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	SetClassLongPtrW(m_hWnd, GCLP_HCURSOR, 0); //to prevent cursor from blinking
-	m_fontNormal = static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT));
-	LOGFONTW logFont;
-	GetObjectW(m_fontNormal, sizeof(logFont), &logFont);
-	logFont.lfUnderline = TRUE;
-	m_fontUnderline = CreateFontIndirectW(&logFont);
+
+	LOGFONTW lf { };
+	GetObjectW(static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT)), sizeof(LOGFONTW), &lf);
+	m_fntDef.CreateFontIndirectW(&lf);
+	lf.lfUnderline = TRUE;
+	m_fntUnderline.CreateFontIndirectW(&lf);
+
 	m_curHand = LoadCursorW(nullptr, IDC_HAND);
 	m_curArrow = LoadCursorW(nullptr, IDC_ARROW);
 	m_hbrBlack = CreateSolidBrush(RGB(0, 0, 0));
@@ -74,21 +75,24 @@ void CAboutDlg::OnMouseMove(UINT /*nFlags*/, CPoint point)
 	}
 }
 
-HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT /*nCtlColor*/)
+HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
+	CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
 	pDC->SetBkColor(RGB(0, 0, 0));
 
 	switch (pWnd->GetDlgCtrlID()) {
 	case IDC_MAILTO:
 		pDC->SetTextColor(RGB(0, 255, 50));
-		pDC->SelectObject(m_fMailtoUnderline ? m_fontNormal : m_fontUnderline);
+		pDC->SelectObject(m_fMailtoUnderline ? &m_fntDef : &m_fntUnderline);
 		break;
 	case IDC_HTTPGITHUB:
 		pDC->SetTextColor(RGB(0, 255, 50));
-		pDC->SelectObject(m_fGithubUnderline ? m_fontNormal : m_fontUnderline);
+		pDC->SelectObject(m_fGithubUnderline ? &m_fntDef : &m_fntUnderline);
 		break;
 	default:
 		pDC->SetTextColor(RGB(255, 255, 255));
+		break;
 	}
 
 	return m_hbrBlack;
@@ -110,7 +114,6 @@ void CAboutDlg::OnLButtonDown(UINT /*nFlags*/, CPoint point)
 
 void CAboutDlg::OnDestroy()
 {
-	DeleteObject(m_fontUnderline);
 	DeleteObject(m_hbrBlack);
 }
 
@@ -318,13 +321,9 @@ void CShutdownDlg::OnTimer(UINT_PTR nIDEvent)
 		case 1:
 		{
 			--m_unTimeTotal;
-			std::thread beep(Beep, 15000, 350); //calling Beep() in async state->
-			beep.detach(); //->and detaching immediately.
-
-			const INT_PTR iReturn = m_stDlgLastMin.DoModal();
-
-			if (iReturn == IDCANCEL)
+			if (const auto iReturn = m_stDlgLastMin.DoModal(); iReturn == IDCANCEL) {
 				ResetTimer();
+			}
 			else if (iReturn == IDC_POSTPONE_BUTTON) {
 				m_unTimeTotal = 30;
 				SetTimer(ID_TIMER_SHUTDOWN, 60000, nullptr); //resetting the timer to 30 min.
@@ -334,6 +333,7 @@ void CShutdownDlg::OnTimer(UINT_PTR nIDEvent)
 		break;
 		default:
 			--m_unTimeTotal;
+			break;
 		}
 
 	}

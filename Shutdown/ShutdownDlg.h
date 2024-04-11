@@ -46,10 +46,11 @@ private:
 	NOTIFYICONDATAW m_stSystrayIcon { };
 	NOTIFYICONIDENTIFIER m_stSystrayIconIdent { };
 	CRect m_rcIcon;
-	HBRUSH m_hbrBlack { }, m_hbrWhite { };
+	HBRUSH m_hbrBlack { };
+	HBRUSH m_hbrWhite { };
 	HWND m_hwndTooltip { };
 	TTTOOLINFOW m_stToolInfo { };
+	std::wstring m_strTooltip { };
 	bool m_fTooltip { false };
 	bool m_fToolTipFirstTime { true };
-	std::wstring m_strTooltip { };
 };

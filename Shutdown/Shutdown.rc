@@ -95,7 +95,7 @@ CAPTION "About..."
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         "OK",IDOK,"Button",BS_OWNERDRAW | WS_TABSTOP,71,45,40,14
-    LTEXT           "Shutdown. Version 1.5",IDC_STATIC,55,10,72,8
+    LTEXT           "Shutdown. Version 1.6",IDC_STATIC,55,10,72,8
     LTEXT           "eaxedx@gmail.com",IDC_MAILTO,61,32,62,8,NOT WS_GROUP
     LTEXT           "https://github.com/jovibor/Shutdown",IDC_HTTPGITHUB,32,21,119,8
     GROUPBOX        "",IDC_STATIC,3,0,176,68
